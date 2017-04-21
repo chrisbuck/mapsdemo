@@ -197,6 +197,8 @@ var whiteTee = '#FFFFFF';
 var goldTee = '#DBA901';
 var jrTee = '#21610B';
 var greenColor = '#31B404';
+var bunkerColor = '#F6E3CE';
+var bunkerBorder = '#36220d';
 
 //Poly object (empty constructor)
 var Poly = function(){
@@ -271,6 +273,14 @@ Poly.addGreen = function(coords){
   
   return new google.maps.Polygon(this.opts);
   
+};
+
+Poly.addBunker = function(coords) {
+    this.opts.paths = coords;
+    this.opts.strokeColor = bunkerBorder;
+    this.opts.fillColor = bunkerColor;
+    
+    return new google.maps.Polygon(this.opts);
 };
 
 Poly.addTemp = function(coords, cnt){
@@ -666,6 +676,36 @@ var green3Coords = [
 {lat: 43.26835960604933, lng: -70.90175248682499}
 ];
 
+var bunker9CCoords = [
+{lat: 43.269951324396416, lng: -70.90374201536179},
+{lat: 43.2699708544244, lng: -70.90372055768967},
+{lat: 43.269977201682146, lng: -70.90367697179317},
+{lat: 43.269961089411176, lng: -70.90363338589668},
+{lat: 43.26995913640837, lng: -70.90360254049301},
+{lat: 43.26997476042921, lng: -70.90357437729836},
+{lat: 43.269975002706886, lng: -70.90353693519774},
+{lat: 43.26997524498455, lng: -70.90352095076923},
+{lat: 43.269967917530074, lng: -70.90351043958435},
+{lat: 43.26995326261848, lng: -70.90349746384163},
+{lat: 43.26994152981805, lng: -70.90349565223732},
+{lat: 43.26993368824178, lng: -70.90350007565576},
+{lat: 43.26992191109444, lng: -70.90351428691065},
+{lat: 43.269913980829415, lng: -70.90353198058438},
+{lat: 43.269911791328454, lng: -70.90354859246872},
+{lat: 43.269913271339554, lng: -70.90356840519235},
+{lat: 43.269912325353076, lng: -70.90358925517648},
+{lat: 43.26990848037561, lng: -70.90360949747264},
+{lat: 43.2698988374152, lng: -70.90362584218383},
+{lat: 43.26988736351095, lng: -70.90363707393408},
+{lat: 43.26987808673572, lng: -70.90365417301655},
+{lat: 43.26987515722745, lng: -70.90366959571838},
+{lat: 43.26987515722745, lng: -70.903689712286},
+{lat: 43.26987906323845, lng: -70.90370580554008},
+{lat: 43.269888828264804, lng: -70.90372189879417},
+{lat: 43.269906405308305, lng: -70.90374067425728},
+{lat: 43.269930817860306, lng: -70.9037446975708}    
+];
+
 var putGreen = Poly.addGreen(putCoords);
 var green1 = Poly.addGreen(green1Coords);
 var blueTee1 = Poly.addBlue(blue1Coords);
@@ -686,6 +726,7 @@ var whiteTee3 = Poly.addWhite(white3Coords);
 var goldTee3 = Poly.addGold(gold3Coords);
 var jrTee3 = Poly.addJr(jr3Coords);
 var green3 = Poly.addGreen(green3Coords);
+var bunker9C = Poly.addBunker(bunker9CCoords);
 
 // ---- TEST (DRAW) OBJECTS ---- //
 IWin.attach(clubMarker, 'rightclick', 'Clubhouse: Pro Shop and Grill');
