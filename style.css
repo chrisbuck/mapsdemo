@@ -8,4 +8,8 @@ body {
 }
 #map-canvas {
   height: 100%;
+  width: 100%;
+}
+.devBtn {
+  border: 1px solid #F2F2F2;
 }
