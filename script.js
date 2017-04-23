@@ -729,7 +729,7 @@ var green3 = Poly.addGreen(green3Coords);
 var bunker9C = Poly.addBunker(bunker9CCoords);
 
 // ---- TEST (DRAW) OBJECTS ---- //
-IWin.attach(clubMarker, 'rightclick', 'Clubhouse: Pro Shop and Grill');
+IWin.attach(clubMarker, 'click', 'Clubhouse: Pro Shop and Grill');
 
 /*
 blueTee1.addListener('click', function(){
