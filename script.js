@@ -176,8 +176,10 @@ var IWin = function(){
 IWin.attach = function(obj, eventType, cont){
   var infoWindow = new google.maps.InfoWindow({content: cont});
   obj.addListener(eventType, function(){
-    infoWindow.open(this.gMap, obj.position);
+    infoWindow.open(gMap, obj);
+      //infoWindow.setPosition(obj.center);
     });
+    return infoWindow;
 };
 
 //Toolbar
@@ -220,9 +222,13 @@ Poly.addBlue = function(coords){
   this.opts.paths = coords;
   this.opts.strokeColor = blueTee;
   this.opts.fillColor = blueTee;
-  
-  return new google.maps.Polygon(this.opts);
-  
+    
+    var blueMrkr = new google.maps.Polygon(this.opts);
+    blueMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    return blueMrkr;
+
 };
 
 //White polygons
@@ -231,7 +237,11 @@ Poly.addWhite = function(coords){
   this.opts.strokeColor = whiteTee;
   this.opts.fillColor = whiteTee;
   
-  return new google.maps.Polygon(this.opts);
+    var whiteMrkr = new google.maps.Polygon(this.opts);
+    whiteMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    return whiteMrkr;
   
 };
 
@@ -241,7 +251,11 @@ Poly.addBlack = function(coords){
   this.opts.strokeColor = blackTee;
   this.opts.fillColor = blackTee;
   
-  return new google.maps.Polygon(this.opts);
+    var blackMrkr = new google.maps.Polygon(this.opts);
+    blackMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    return blackMrkr;
   
 };
 
@@ -251,7 +265,11 @@ Poly.addGold = function(coords){
   this.opts.strokeColor = goldTee;
   this.opts.fillColor = goldTee;
   
-  return new google.maps.Polygon(this.opts);
+    var goldMrkr = new google.maps.Polygon(this.opts);
+    goldMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    return goldMrkr;
   
 };
 
@@ -261,19 +279,30 @@ Poly.addJr = function(coords){
   this.opts.strokeColor = jrTee;
   this.opts.fillColor = jrTee;
   
-  return new google.maps.Polygon(this.opts);
+    var jrMrkr = new google.maps.Polygon(this.opts);
+    jrMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    return jrMrkr;
   
 };
 
 //Greens polygons
-Poly.addGreen = function(coords){
-  this.opts.paths = coords;
-  this.opts.strokeColor = greenColor;
-  this.opts.fillColor = greenColor;
-  
-  return new google.maps.Polygon(this.opts);
+Poly.addGreen = function(coords, mycap){
+var obj = this;
+    //obj.opts.title = mycap;
+  obj.opts.paths = coords;
+  obj.opts.strokeColor = greenColor;
+  obj.opts.fillColor = greenColor;
+
+    var greenMrkr = new google.maps.Polygon(this.opts);
+    greenMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    return greenMrkr;
   
 };
+
 
 Poly.addBunker = function(coords) {
     this.opts.paths = coords;
@@ -297,7 +326,7 @@ Poly.addTemp = function(coords, cnt){
 // ---- METHODS ---- //
 
 //Add Marker
-MyMap.addMarker = function(myLat, myLng, myId, myTitle){
+MyMap.addMarker = function(myLat, myLng, myTitle, myId){
   var markerOpts = {
     id: myId,
     title: myTitle,
@@ -308,6 +337,29 @@ MyMap.addMarker = function(myLat, myLng, myId, myTitle){
     map: gMap //gMap recreates the map (necessary) upon adding a marker
   };
   var newMarker = new google.maps.Marker(markerOpts);
+  return newMarker;
+};
+
+MyMap.teeMarker = function(myLat, myLng, myImg, myTitle, myId) {
+    var markerOpts = {
+    id: myId,
+    title: myTitle,
+    position: {
+      lat: myLat,
+      lng: myLng
+    },
+    draggable: true,
+    opacity: 0.3,
+    map: gMap //gMap recreates the map (necessary) upon adding a marker
+  };
+  var newMarker = new google.maps.Marker(markerOpts);
+    newMarker.setIcon(myImg);
+    google.maps.event.addListener(newMarker,"mouseover",function(){
+        this.setOptions({opacity: 0.8});
+    });
+    google.maps.event.addListener(newMarker,"mouseout",function(){
+        this.setOptions({opacity: 0.3});
+    });
   return newMarker;
 };
 
@@ -368,11 +420,18 @@ Dots.addDot = function(polyDot){
   });
 };
 
+
+
 // ---- MARKERS ---- //
 // draw the shapes //
 
-var clubMarker = MyMap.addMarker(43.270438141949775, -70.90466251349028);
-IWin.attach(clubMarker, 'click', 'Clubhouse');
+var clubMarker = MyMap.addMarker(43.270438141949775, -70.90466251349028, 'Clubhouse', 'mrkrClub');
+MyMap.teeMarker(43.26999526695053, -70.90519845485687, '/bluegolfer.png', 'Hole 1 Blue Tee');
+MyMap.teeMarker(43.26988199274653, -70.90506434440613, '/whitegolfer.png', 'Hole 1 White Tee');
+MyMap.teeMarker(43.27013588291049, -70.90537548065186, '/blackgolfer.png', 'Hole 1 Black Tee');
+MyMap.teeMarker(43.26967497382899, -70.90474784374237, '/goldgolfer.png', 'Hole 1 Gold Tee');
+MyMap.teeMarker(43.26960857138553, -70.90468883514404, '/jrgolfer.png', 'Hole 1 Jr Tee');
+//IWin.attach(clubMarker, 'click', 'Clubhouse');
 
 // ---- POLYGONS ---- //
 // draw the shapes //
@@ -706,7 +765,7 @@ var bunker9CCoords = [
 {lat: 43.269930817860306, lng: -70.9037446975708}    
 ];
 
-var putGreen = Poly.addGreen(putCoords);
+var putGreen = Poly.addGreen(putCoords, 'Practice Green');
 var green1 = Poly.addGreen(green1Coords);
 var blueTee1 = Poly.addBlue(blue1Coords);
 var whiteTee1 = Poly.addWhite(white1Coords);
@@ -729,7 +788,27 @@ var green3 = Poly.addGreen(green3Coords);
 var bunker9C = Poly.addBunker(bunker9CCoords);
 
 // ---- TEST (DRAW) OBJECTS ---- //
-IWin.attach(clubMarker, 'click', 'Clubhouse: Pro Shop and Grill');
+
+google.maps.event.addListener(putGreen,"mouseover",function(e){
+ this.setOptions({fillColor: "#00FF00"});
+    /*
+    var pths = this.getPaths();
+    var pArr = pths.getArray();
+    var p1 = pArr[0];
+    var coords = p1.getArray();
+    var pLat = coords[0].lat();
+    var pLng = coords[0].lng();
+    var pos = new google.maps.LatLng(pLat, pLng);
+    var lbl = document.getElementById('testlbl');
+    lbl.style.visibility = 'visible';
+    //alert(this.top);
+    */
+});
+
+google.maps.event.addListener(putGreen,"mouseout",function(){
+ this.setOptions({fillColor: "#31B404"});
+});
+
 
 /*
 blueTee1.addListener('click', function(){
