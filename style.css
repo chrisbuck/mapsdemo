@@ -25,3 +25,6 @@ body {
     left: 0;
     visibility: hidden;
 }
+.imgSelect {
+    float: left;
+}

@@ -45,10 +45,10 @@ gMap.addListener('rightclick', function(e){
 	  var myLng = e.latLng.lng();
 	  var polyDot = {
 	    lat: myLat,
-      lng: myLng
+        lng: myLng
 	  };
 	//add a dot to the array
-	  polyDots.push(polyDot);
+	  //polyDots.push(polyDot);    //comment out to omit center dot in poly
 	//center the map on the new dot center
 	  gMap.setCenter(polyDot);
 	//zoom to 24
@@ -363,6 +363,9 @@ MyMap.teeMarker = function(myLat, myLng, myImg, myTitle, myId) {
   return newMarker;
 };
 
+//Function to edit marker options (with form) - use teeMarker first
+
+
 var newCoords = [];
 var dotBool = false;
 Dots.addDot = function(polyDot){
@@ -381,17 +384,35 @@ Dots.addDot = function(polyDot){
     zIndex: 4,
     radius: 1
   };
-  var newDot = new google.maps.Circle(dotOpts);
-  newDot.addListener('click', function() {
-    recordBool = false; //Prevent new points being added to the polygon.
-    alert('No new points will be added to the polygon.');
-  });
-  newDot.addListener('rightclick', function() {
+    //Add a new circle
+    var newDot = new google.maps.Circle(dotOpts);
+    //Click event
+    newDot.addListener('click', function() {
+        recordBool = false; //Prevent new points being added to the polygon.
+        alert('No new points will be added to the polygon.');
+    });
+    //Rightclick event
+    newDot.addListener('rightclick', function() {
 	var myPaths = tempPolys[0].getPaths();
 	myPaths = myPaths.getArray();
 	myPaths = myPaths[0];
 	myPaths = myPaths.getArray();
-  var pathsContent = '';
+      //Info window to display marker options
+    
+    /*
+    var mrkrContent;
+    mrkrContent = '<h3>Select a marker:</h3>';
+    mrkrContent += '<div id="selectMarker">';
+    mrkrContent += '<div class="imgSelect" id="blackGolfer">';
+    mrkrContent += '<img src="/blackGolfer.png"></img>';
+    mrkrContent += '<img src="/blueGolfer.png"></img>';
+    mrkrContent += '</div>';
+    mrkrContent +='</div>';
+    */
+
+    var centContent = this.center;
+    var pathsContent = '';
+    
   
 	var i;
 	var pLen = myPaths.length;
@@ -406,8 +427,15 @@ Dots.addDot = function(polyDot){
 	    pathsContent += 'lng: ' + pLng + '},</br>';
 	  }
 	}
+    
+    //var winContent = pathsContent + mrkrContent;
+    var winContent = '<h3>Geometry:</h3>';
+        winContent += '<h4>Center:</h4>';
+        winContent += centContent;
+        winContent += '<h4>Coordinates:</h4>';
+        winContent += pathsContent;
 	
-	var pathsWin = new google.maps.InfoWindow({content: pathsContent});
+	var pathsWin = new google.maps.InfoWindow({content: winContent});
 	var winPos = newDot.center;
 	pathsWin.open(gMap, gMap);
   pathsWin.setPosition(winPos);
@@ -765,7 +793,7 @@ var bunker9CCoords = [
 {lat: 43.269930817860306, lng: -70.9037446975708}    
 ];
 
-var putGreen = Poly.addGreen(putCoords, 'Practice Green');
+var putGreen = Poly.addGreen(putCoords);
 var green1 = Poly.addGreen(green1Coords);
 var blueTee1 = Poly.addBlue(blue1Coords);
 var whiteTee1 = Poly.addWhite(white1Coords);
@@ -791,6 +819,9 @@ var bunker9C = Poly.addBunker(bunker9CCoords);
 
 google.maps.event.addListener(putGreen,"mouseover",function(e){
  this.setOptions({fillColor: "#00FF00"});
+google.maps.event.addListener(putGreen,"mouseout",function(){
+ this.setOptions({fillColor: "#31B404"});
+});
     /*
     var pths = this.getPaths();
     var pArr = pths.getArray();
@@ -805,9 +836,7 @@ google.maps.event.addListener(putGreen,"mouseover",function(e){
     */
 });
 
-google.maps.event.addListener(putGreen,"mouseout",function(){
- this.setOptions({fillColor: "#31B404"});
-});
+
 
 
 /*
