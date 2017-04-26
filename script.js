@@ -60,6 +60,7 @@ var polyDots = [];
 var tempPolys = [];
 var lines = [];
 var playerWins = [];
+var markers = [];
 
 //Map events
 //player img (for judging distances)
@@ -1227,7 +1228,100 @@ var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
         });
         return blue1Win;
     });
-
+// // ---- MarkerWin ----// //
+    //Markers and InfoWindows (or combos of both)
+    //Create a new MarkerWin object first, then call prototype methods
+    //Example:
+    //  //var mwin = new MarkerWin
+    //  //mwin.addMrkr(43.27101081936183, -70.90431869029999)
+(function(){
+    //Constructor function:
+        var MarkerWin = (function(element, opts){
+            function MarkerWin(){
+                this.gMap = gMap;
+            }
+            
+        //Prototype:
+            MarkerWin.prototype = {
+                _newDesc: function(){
+                },
+                addHover: function(obj, over, out){
+                //add default (standard) events to the marker
+                    //var mLast = markers.length - 1;
+                    //var mObj = markers[mLast];
+                    var mObj = obj;
+                    mObj.setOpacity(out);
+                    google.maps.event.addListener(mObj, 'mouseover', function(){
+                        mObj.setOpacity(over);
+                    });
+                    google.maps.event.addListener(mObj, 'mouseout', function(){
+                        mObj.setOpacity(out);
+                    });
+                },
+                _createMarker: function(mLat, mLng){
+                //generate new marker id (always equal to number of markers in array)
+                    var mId = markers.length;
+                //default options
+                    var defOpts = {
+                        id: 'mrkr' + mId,
+                        //title: ,
+                        position: {
+                            lat: mLat,
+                            lng: mLng
+                        },
+                        draggable: true,
+                        opacity: 0.75,
+                        map: gMap
+                    };
+                //create the marker
+                    var newMrkr = new google.maps.Marker(defOpts);
+                //add new marker to the array
+                    markers.push(newMrkr);
+                    
+                    return newMrkr;
+                },
+                addMrkr: function(mLat, mLng){
+                    var newMrkr = this._createMarker(mLat, mLng);
+                    this.addHover(newMrkr, 0.9, 0.75); //default hover behavior (modifiable with .addHover())
+                    console.log(markers);
+                    return newMrkr;
+                },
+                _createInfoWin: function(obj){
+                    var defContent = '<h3>Info Window Content:</h4>(modifiable with .winContent())';
+                    var defOpts = {
+                        content: defContent
+                    };
+                    var newIWin = new google.maps.InfoWindow(defOpts);
+                    //listener on the marker to open the info window
+                    obj.addListener('click', function(){
+                        newIWin.open(gMap, obj);
+                    });
+                    //listener on dragging the marker to close the info window
+                    //// need separate function/object for player markers (tee box)
+                    //// or a function to remove this listener.
+                    obj.addListener('drag', function(){
+                        newIWin.close();
+                    })
+                    return newIWin;
+                },
+                addInfoWin: function(obj){
+                    var newIWin = this._createInfoWin(obj);
+                    return newIWin;
+                },
+                winContent: function(obj){
+                    
+                }
+            };
+            
+            return MarkerWin;
+    }());
+    
+    //Factory function:
+        MarkerWin.create = function(element, opts){
+            return new MarkerWin(element, opts);
+        };
+        window.MarkerWin = MarkerWin;
+}());
 // ---- TEST (DRAW) OBJECTS ---- //
 /*
 google.maps.event.addListener(putGreen,"mouseover",function(e){
