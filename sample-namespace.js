@@ -2,13 +2,11 @@
 
 var Desc = (function(element, opts){
     function Desc(){
-        this.gMap = document.getElementById('map-canvas');
+        
     }
     Desc.prototype = {
-        addNew: function(element, cont){
-            var descWin = new google.maps.InfoWindow({content: cont});
-            descWin.open(gMap, element);
-            return descWin;
+        addNew: function(element, opts){
+            
         }
     }
     return Desc;

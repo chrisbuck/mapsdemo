@@ -144,55 +144,9 @@ gMap.addListener('rightclick', function(e){
   //add a listener function to return the code for the new polygon
 });
 /*
-gMap.addListener('rightclick', function(e){
-	var myLat = e.latLng.lat();
-	var myLng = e.latLng.lng();
-	var polyDot = '{lat: ' + myLat + ', lng: ' + myLng + '}';
-	polyDots.push(polyDot);
-	var myLatLng = 'lat: ' + myLat + ',</br> lng: ' + myLng;
-  var toolContent = '<div id="toolDivOuter">';
-    toolContent += '<div id="toolDivInner">';
-      toolContent += '<div id="toolDivTopRow">';
-        toolContent += '<div id="toolDivHeader">';
-          toolContent += '<h3>Developer Options</h3>';
-          toolContent += myLatLng;
-        toolContent += '</div>';
-      toolContent += '</div>';
-      toolContent += '<div id="toolDivMidRow"></br>';
-        toolContent += '<img id="recordBtn" class="devBtn" onclick="record()" src="https://www.dropbox.com/s/s83pqbqh7217063/recordBtn.png?dl=1"></img>';
-        toolContent += '<img id="stopBtn" class="devBtn" onclick="stopRecording()" src="https://www.dropbox.com/s/vj6siudfc9086fg/stopBtn.png?dl=1"></img>';
-      toolContent += '</div>';
-      toolContent += '<div id="toolDivBottomRow">';
-      toolContent += '</div>';
-    toolContent += '</div>';
-  toolContent += '</div>';
-  var toolWin = new google.maps.InfoWindow({
-    id: 'toolWin',
-    content: toolContent
-  });
-  toolWin.open(gMap, gMap);
-  toolWin.setPosition(e.latLng);
-  alert(polyDots);
-  return toolWin;
-});
 
 // ---- TOOLBAR FUNCTIONS ---- //
-var recording = false;
-function record(){
-  if (recording === false) {
-    alert('Now recording. Click the next point in the polygon. Click on the last point to stop recording.');
-    recording === true;
-    gMap.addListener('click', function(e){
-      var myLat = e.latLng.lat();
-	    var myLng = e.latLng.lng();
-	    var polyDot = 'lat: ' + myLat + ', lng: ' + myLng + ')';
-	    Dots.push(polyDot);
-	    Dots.addDot({polyDot});
-	    //alert(e.getCenter());
-    });
-    //Dots.addDot();
-  }
-}
+
 */
 
 // ---- OTHER OBJECTS ---- //
@@ -275,27 +229,6 @@ Line.show = function(e, anch, pWin){
         distSpan.innerHTML = distStr;
         return distSpan;
 
-        /*
-        var distArr = [];
-        if (distArr.length == 0) {
-            distArr.push(distanceDiv);
-            var divObj = distArr[0];
-            divObj.innerText = dist + ' yards';
-            var divHTML = divObj.outerHTML;
-            xMap.insertAdjacentHTML('beforeBegin', divHTML);
-            return divObj;
-        } else if(distArr.length > 0){
-            var oldDiv = distArr.pop();
-            var oldEl = document.getElementById('distanceMeter');
-            distArr.push(oldDiv);
-            var nextObj = distArr[0];
-            nextObj.innerText = dist + ' yards';
-            var nextHTML = nextObj.outerHTML;
-            document.removeChild(oldEl);
-            xMap.insertAdjacentHTML('beforeBegin', nextHTML);
-            return nextObj;
-        }
-        */
         return newLine;
     }
 };
@@ -553,11 +486,6 @@ MyMap.teeMarker = function(myLat, myLng, myImg, myTitle, myId) {
   return newMarker;
 };
 
-//Function to edit marker options (with form) - use teeMarker first
-//Function to add a dynamic arrow to the player marker
-/*function dynaLine(e, mrkr){
-    
-}*/
 //Function to add the player marker
 MyMap.addPlayer = function(cent){
     if (lineBool == false) {
@@ -588,6 +516,15 @@ MyMap.addPlayer = function(cent){
             gMap.setZoom(24);
             var oldLine = lines.pop();
             oldLine.setMap(null);
+        });
+        playerMarker.addListener('rightclick', function(){
+            lineBool = false;
+            playerBool = false;
+            var distLine = lines.pop();
+            distLine.setMap(null);
+            var pWins = playerWins.pop();
+            pWins.setMap(null);
+            this.setMap(null);
         });
         playerMarker.addListener('click', function(){
             if (lineBool == false) {
