@@ -647,9 +647,10 @@ Dots.addDot = function(polyDot){
 
 // ---- MARKERS ---- //
 // draw the shapes //
-
-var clubMarker = MyMap.addMarker(43.270438141949775, -70.90466251349028, 'Clubhouse', 'mrkrClub');
-MyMap.teeMarker(43.26999526695053, -70.90519845485687, '/bluegolfer.png', 'Hole 1 Blue Tee');
+var markers = [];
+var clubMrkr = MyMap.addMarker(43.270438141949775, -70.90466251349028, 'Clubhouse', 'mrkrClub');
+var blue1Mrkr = MyMap.teeMarker(43.26999526695053, -70.90519845485687, '/bluegolfer.png', 'Hole 1 Blue Tee');
+    markers.push(blue1Mrkr);
 MyMap.teeMarker(43.26988199274653, -70.90506434440613, '/whitegolfer.png', 'Hole 1 White Tee');
 MyMap.teeMarker(43.27013588291049, -70.90537548065186, '/blackgolfer.png', 'Hole 1 Black Tee');
 MyMap.teeMarker(43.26967497382899, -70.90474784374237, '/goldgolfer.png', 'Hole 1 Gold Tee');
@@ -1072,6 +1073,49 @@ var bunker9CCoords = [
 {lat: 43.269930817860306, lng: -70.9037446975708}    
 ];
 
+var green18Center = '(43.27144340048304, -70.90403571724892)';  
+var green18Coords = [
+{lat: 43.2713398937677, lng: -70.90414434671402},
+{lat: 43.271354540955116, lng: -70.90414971113205},
+{lat: 43.271374070532815, lng: -70.90414971113205},
+{lat: 43.271388717711986, lng: -70.90414971113205},
+{lat: 43.2714019001702, lng: -70.90414702892303},
+{lat: 43.2714153267451, lng: -70.90414568781853},
+{lat: 43.27142789889889, lng: -70.90414501726627},
+{lat: 43.27144199679645, lng: -70.90414065867662},
+{lat: 43.271468575291365, lng: -70.90413177385926},
+{lat: 43.27149162930368, lng: -70.9041313547641},
+{lat: 43.27151292107235, lng: -70.90413382742554},
+{lat: 43.27153626114486, lng: -70.9041431103833},
+{lat: 43.271560625363634, lng: -70.90414909296669},
+{lat: 43.2715806192732, lng: -70.90414135542233},
+{lat: 43.2715935456512, lng: -70.90412407560507},
+{lat: 43.27160293826443, lng: -70.9040899547108},
+{lat: 43.271603728670435, lng: -70.90406350653211},
+{lat: 43.27159826502292, lng: -70.90404223581572},
+{lat: 43.271590650822894, lng: -70.90402221272598},
+{lat: 43.271575126017645, lng: -70.90399744903152},
+{lat: 43.27155466942905, lng: -70.90397299724373},
+{lat: 43.27153565284757, lng: -70.9039554069318},
+{lat: 43.271516379790945, lng: -70.90393722404428},
+{lat: 43.2714960020168, lng: -70.90392008597348},
+{lat: 43.27147507187994, lng: -70.90390615252005},
+{lat: 43.27145093612542, lng: -70.90389650358424},
+{lat: 43.271434962333686, lng: -70.90389570242996},
+{lat: 43.27141721065665, lng: -70.90389798406181},
+{lat: 43.271394664120166, lng: -70.9039111948183},
+{lat: 43.27137362606221, lng: -70.90393121124163},
+{lat: 43.271357248156804, lng: -70.9039492660803},
+{lat: 43.271342223848144, lng: -70.90396634012671},
+{lat: 43.27132494689805, lng: -70.90398024156798},
+{lat: 43.271317284900825, lng: -70.90399523891568},
+{lat: 43.27131157586209, lng: -70.90401291847229},
+{lat: 43.27130303166386, lng: -70.90403974056244},
+{lat: 43.27130034634417, lng: -70.9040692448616},
+{lat: 43.271305716983434, lng: -70.90410679578781},
+{lat: 43.27131645826057, lng: -70.90413361787796}    
+];
+
 var putGreen = Poly.addGreen(putCoords);
 var green1 = Poly.addGreen(green1Coords);
 var blueTee1 = Poly.addBlue(blue1Coords);
@@ -1096,6 +1140,93 @@ var goldTee3 = Poly.addGold(gold3Coords);
 var jrTee3 = Poly.addJr(jr3Coords);
 var green3 = Poly.addGreen(green3Coords);
 var bunker9C = Poly.addBunker(bunker9CCoords);
+var green18 = Poly.addGreen(green18Coords);
+
+// ---- DESCRIPTIONS --- //
+/*
+MyMap.teeWin = function(obj, pref, gLat, gLng){
+    var bg;
+    var txt;
+    var mrk = markers[0];
+    if (pref.search('blue') > -1){
+        bg = '#010179;';
+        txt = '#FFFFFF;';
+    }
+    var teeDesc = '<div class="dscTbl" id="' + pref + 'DescTbl"><table border="1px solid #F2F2F2"><tr><td style="background-color: ' + bg + '"><span style="color: ' + txt + '">Hole 1</span></td><td><strong>Par 4</strong></td><td id="' + pref + 'yds">Yds: 306</td><td>Hcp: 18</td></tr></table></div><div class="dscTxt" id="blue1DescTxt"><p>From the blue tees, the first set of bunkers (~180 yds) are reachable for many golfers. Trouble spots off the tee box are the bunkers and right-side trees (with most golfers hitting left-right fades).</p><em>Strategy:&nbsp;</em></br><ul><li>Drive:&nbsp; Easy swing off the tee box, left side fairway.</li><li>2nd:&nbsp; (~150 yds) Wedge to the right-side green (pin hunting is high risk, low payoff, with a greenside bunker and a green that is hard to hold).</li><li>Green:&nbsp; 2-put for par.</li></ul><p><em>Birdie Chance:&nbsp;</em><strong>Low</strong></p></div>';
+    console.log(teeDesc);
+    console.log(obj);
+    console.log(gMap);
+    var mywin = new google.maps.InfoWindow({content: teeDesc});
+    console.log(mywin);
+    mywin.addListener('click',function(e){
+        var myLat = e.latLng.lat();
+        var myLng = e.latLng.lng();
+        var myPos = {
+            lat: myLat,
+            lng: myLng
+        };
+        gMap.setCenter(myPos);
+        gMap.setZoom(24);
+        mywin.open(this.gMap, obj);
+        mrk.addListener('drag', function(e){
+            myLat = e.latLng.lat();
+            myLng = e.latLng.lng();
+            myPos = {
+                lat: myLat,
+                lng: myLng
+            };
+            //var gLat = 43.26751099809115,
+            //    gLng = -70.903599858284;
+            var gPos = {
+                lat: gLat,
+                lng: gLng
+            };
+            var toGreen = getDistance(myPos, gPos);
+                toGreen = Math.round(toGreen);
+            console.log(toGreen);
+            var ydCell = document.getElementById(pref + 'yds');
+            ydCell.innerHTML = toGreen;
+        });
+        return mywin;
+    });
+};
+    
+var blue1Win = new MyMap.teeWin(markers[0], 'blue1', 43.26751099809115, -70.903599858284);
+*/
+    
+var blue1Desc = '<div class="dscTbl" id="blue1DescTbl"><table border="1px solid #F2F2F2"><tr><td style="background-color: #010179;"><span style="color: #FFFFFF;">Hole 1</span></td><td><strong>Par 4</strong></td><td id="blue1yds">Yds: 306</td><td>Hcp: 18</td></tr></table></div><div class="dscTxt" id="blue1DescTxt"><p>From the blue tees, the first set of bunkers (~180 yds) are reachable for many golfers. Trouble spots off the tee box are the bunkers and right-side trees (with most golfers hitting left-right fades).</p><em>Strategy:&nbsp;</em></br><ul><li>Drive:&nbsp; Easy swing off the tee box, left side fairway.</li><li>2nd:&nbsp; (~150 yds) Wedge to the right-side green (pin hunting is high risk, low payoff, with a greenside bunker and a green that is hard to hold).</li><li>Green:&nbsp; 2-put for par.</li></ul><p><em>Birdie Chance:&nbsp;</em><strong>Low</strong></p></div>';
+    
+var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
+    blue1Mrkr.addListener('click',function(e){
+        var myLat = e.latLng.lat();
+        var myLng = e.latLng.lng();
+        var myPos = {
+            lat: myLat,
+            lng: myLng
+        };
+        gMap.setCenter(myPos);
+        gMap.setZoom(24);
+        blue1Win.open(gMap, blue1Mrkr);
+        blue1Mrkr.addListener('drag', function(e){
+            myLat = e.latLng.lat();
+            myLng = e.latLng.lng();
+            myPos = {
+                lat: myLat,
+                lng: myLng
+            };
+            var gLat = 43.26751099809115,
+                gLng = -70.903599858284;
+            var gPos = {
+                lat: gLat,
+                lng: gLng
+            };
+            var toGreen = getDistance(myPos, gPos);
+                toGreen = Math.round(toGreen);
+            var ydCell = document.getElementById('blue1yds');
+            ydCell.innerHTML = toGreen;
+        });
+        return blue1Win;
+    });
 
 // ---- TEST (DRAW) OBJECTS ---- //
 /*
