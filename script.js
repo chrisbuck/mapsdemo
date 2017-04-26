@@ -1,3 +1,22 @@
+(function(window, google){
+// ---- MATH ---- //
+var rad = function(x) {
+  return x * Math.PI / 180;
+};
+
+var getDistance = function(p1, p2) {
+  var R = 6378137; // Earth’s mean radius in meter
+  var dLat = rad(p2.lat - p1.lat);
+  var dLong = rad(p2.lng - p1.lng);
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
+    Math.sin(dLong / 2) * Math.sin(dLong / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+  return d; // returns the distance in meter
+};
+
+
 // ---- DEFINE THE MAP ---- //
 //Constructor function
 var MyMap = function(){
@@ -5,6 +24,8 @@ var MyMap = function(){
     
   }
 };
+// ---- IMAGES ---- //
+var golferImg = "/golfer.png";
 
 // ---- MAP PROPERTIES ---- //
 
@@ -32,12 +53,33 @@ MyMap.create = function() {
 
 //Map object
 var gMap = MyMap.create();
-var recordBool = false;
-//Map Listener Function (Toolbar)
-//Listener for the Developer Options
+var playerBool = false; //toggles the player img (for judging distances)
+var recordBool = false; //toggles recording polygons
+var lineBool = false; //allows drawing of lines
 var polyDots = [];
 var tempPolys = [];
+var lines = [];
+var playerWins = [];
 
+//Map events
+//player img (for judging distances)
+gMap.addListener('dblclick', function(e){
+    if (playerBool == false) {
+        //zoom, center, and add the player img/obj
+        var myLat = e.latLng.lat();
+        var myLng = e.latLng.lng();
+        var clickCent = {
+            lat: myLat,
+            lng: myLng
+        };
+        MyMap.addPlayer(clickCent);
+        playerBool = true;
+    } else {
+        //move the playerImg to the new location
+    }
+});
+
+//map rightclick (for creating polygons)
 gMap.addListener('rightclick', function(e){
   if (recordBool === false) {
   //get the new position property
@@ -160,11 +202,102 @@ var Mrkr = function(){
   function Mrkr(){
   }
 };
-
+    
 //Circles
 var Dots = function(){
 	function Dots(){
 	}
+};
+
+//Lines
+var Line = function(){
+  function Line(){
+    
+  }
+};
+
+//default options
+Line.opts = {
+    map: gMap,
+    strokeOpacity: 0.25, 
+    strokeWeight: 2,
+    fillOpacity: 0.15,
+    strokeColor: '#FFFFFF',
+    fillColor: '#FFFFFF'
+};
+
+//line constructor
+Line.show = function(e, anch, pWin){
+    if(lineBool == true){
+        var anchLat = anch.lat;
+        var anchLng = anch.lng;
+        var anchPos = {
+            lat: anchLat,
+            lng: anchLng
+        };
+        var endLat = e.latLng.lat();
+        var endLng = e.latLng.lng();
+        var endPos = {
+            lat: endLat,
+            lng: endLng
+        };
+        var lineArr = [];
+        if(lineArr.length < 1){
+            lineArr.push(anchPos);
+            lineArr.push(endPos);
+        } else if (lineArr.length == 2){
+            lineArr.splice(1, 1);
+            lineArr.push(endPos);
+        }
+        this.opts.id = 'distanceLine';
+        this.opts.paths = lineArr;
+
+        var newLine = new google.maps.Polygon(this.opts);
+        
+        newLine.addListener('click', function(){
+            lineBool = false;
+        });
+        if (lines.length == 0) {
+            lines.push(newLine);
+        } else if (lines.length > 0) {
+            var oldLine = lines.pop();
+            oldLine.setMap(null);
+            lines.push(newLine);
+        }
+        
+        //distance mrkr
+        var distArr = [];
+        var dist = getDistance(anchPos, endPos);
+        dist = (dist * 1.09361);
+        distStr = Math.round(dist) + ' yards';
+        console.log(distStr);
+        var distSpan = document.getElementById('distanceSpan');
+        distSpan.innerHTML = distStr;
+        return distSpan;
+
+        /*
+        var distArr = [];
+        if (distArr.length == 0) {
+            distArr.push(distanceDiv);
+            var divObj = distArr[0];
+            divObj.innerText = dist + ' yards';
+            var divHTML = divObj.outerHTML;
+            xMap.insertAdjacentHTML('beforeBegin', divHTML);
+            return divObj;
+        } else if(distArr.length > 0){
+            var oldDiv = distArr.pop();
+            var oldEl = document.getElementById('distanceMeter');
+            distArr.push(oldDiv);
+            var nextObj = distArr[0];
+            nextObj.innerText = dist + ' yards';
+            var nextHTML = nextObj.outerHTML;
+            document.removeChild(oldEl);
+            xMap.insertAdjacentHTML('beforeBegin', nextHTML);
+            return nextObj;
+        }
+        */
+        return newLine;
+    }
 };
 
 //InfoWindows
@@ -227,6 +360,15 @@ Poly.addBlue = function(coords){
     blueMrkr.addListener('rightclick', function(e){
         alert(e.latLng.lat() + ', ' + e.latLng.lng());
     });
+    blueMrkr.addListener('mouseover', function(){
+        this.setOptions({fillColor: "#0000f2"});
+        this.setOptions({fillOpacity: 0.3});
+    });
+    blueMrkr.addListener('mouseout', function(){
+        this.setOptions({fillColor: "#08088A"});
+        this.setOptions({fillOpacity: 0.15});
+    });
+
     return blueMrkr;
 
 };
@@ -241,6 +383,13 @@ Poly.addWhite = function(coords){
     whiteMrkr.addListener('rightclick', function(e){
         alert(e.latLng.lat() + ', ' + e.latLng.lng());
     });
+    whiteMrkr.addListener('mouseover', function(){
+        this.setOptions({fillOpacity: 0.3});
+    });
+    whiteMrkr.addListener('mouseout', function(){
+        this.setOptions({fillOpacity: 0.15});
+    });
+
     return whiteMrkr;
   
 };
@@ -255,6 +404,13 @@ Poly.addBlack = function(coords){
     blackMrkr.addListener('rightclick', function(e){
         alert(e.latLng.lat() + ', ' + e.latLng.lng());
     });
+    blackMrkr.addListener('mouseover', function(){
+        this.setOptions({fillOpacity: 0.3});
+    });
+    blackMrkr.addListener('mouseout', function(){
+        this.setOptions({fillOpacity: 0.15});
+    });
+
     return blackMrkr;
   
 };
@@ -269,6 +425,13 @@ Poly.addGold = function(coords){
     goldMrkr.addListener('rightclick', function(e){
         alert(e.latLng.lat() + ', ' + e.latLng.lng());
     });
+    goldMrkr.addListener('mouseover', function(){
+        this.setOptions({fillOpacity: 0.3});
+    });
+    goldMrkr.addListener('mouseout', function(){
+        this.setOptions({fillOpacity: 0.15});
+    });
+
     return goldMrkr;
   
 };
@@ -283,6 +446,15 @@ Poly.addJr = function(coords){
     jrMrkr.addListener('rightclick', function(e){
         alert(e.latLng.lat() + ', ' + e.latLng.lng());
     });
+    jrMrkr.addListener('mouseover', function(){
+        this.setOptions({fillColor: '#2e9d08'});
+        this.setOptions({fillOpacity: 0.3});
+    });
+    jrMrkr.addListener('mouseout', function(){
+        this.setOptions({fillColor: '#21610B'});
+        this.setOptions({fillOpacity: 0.15});
+    });
+
     return jrMrkr;
   
 };
@@ -299,6 +471,13 @@ var obj = this;
     greenMrkr.addListener('rightclick', function(e){
         alert(e.latLng.lat() + ', ' + e.latLng.lng());
     });
+    greenMrkr.addListener('mouseover', function(){
+        this.setOptions({fillColor: "#00FF00"});
+    });
+    greenMrkr.addListener('mouseout', function(){
+        this.setOptions({fillColor: "#31B404"});
+    });
+
     return greenMrkr;
   
 };
@@ -309,7 +488,18 @@ Poly.addBunker = function(coords) {
     this.opts.strokeColor = bunkerBorder;
     this.opts.fillColor = bunkerColor;
     
-    return new google.maps.Polygon(this.opts);
+    var bunkerMrkr = new google.maps.Polygon(this.opts);
+    bunkerMrkr.addListener('rightclick', function(e){
+        alert(e.latLng.lat() + ', ' + e.latLng.lng());
+    });
+    bunkerMrkr.addListener('mouseover', function(){
+        this.setOptions({fillOpacity: 0.5});
+    });
+    bunkerMrkr.addListener('mouseout', function(){
+        this.setOptions({fillOpacity: 0.15});
+    });
+
+    return bunkerMrkr;
 };
 
 Poly.addTemp = function(coords, cnt){
@@ -364,7 +554,76 @@ MyMap.teeMarker = function(myLat, myLng, myImg, myTitle, myId) {
 };
 
 //Function to edit marker options (with form) - use teeMarker first
+//Function to add a dynamic arrow to the player marker
+/*function dynaLine(e, mrkr){
+    
+}*/
+//Function to add the player marker
+MyMap.addPlayer = function(cent){
+    if (lineBool == false) {
+        var markerOpts = {
+        id: 'playerMarker',
+        title: 'Current Location',
+        position: cent,
+        draggable: true,
+        opacity: 0.75,
+        map: gMap //gMap recreates the map (necessary) upon adding a marker
+        };
+        playerMarker = new google.maps.Marker(markerOpts);
+        playerMarker.setAnimation(google.maps.Animation.DROP);
+        playerMarker.setIcon(golferImg);
+        var newPos = cent;
+        gMap.setCenter(newPos);
+        gMap.setZoom(24);
 
+        playerMarker.addListener('dragend', function(e){
+            var cLat = e.latLng.lat();
+            var cLng = e.latLng.lng();
+            var newCent = {
+                lat: cLat,
+                lng: cLng
+            };
+            cent = newCent;
+            gMap.setCenter(cent);
+            gMap.setZoom(24);
+            var oldLine = lines.pop();
+            oldLine.setMap(null);
+        });
+        playerMarker.addListener('click', function(){
+            if (lineBool == false) {
+                //boolean:true allows the line and distance functions to execute
+                lineBool = true;
+                var winContent = '<strong>Distance:</strong> &nbsp; <span id="distanceSpan"></span>';
+                var defaults = {
+                    id: 'playerWin',
+                    content: winContent
+                };
+                var playerWin = new google.maps.InfoWindow(defaults);
+                playerWins.push(playerWin);
+                playerWin.open(gMap, playerMarker);
+
+                playerWin.addListener('closeclick', function(){
+                    //set line bool to false, and remove any existing lines
+                    lineBool = false;
+                    var distLine = lines.pop();
+                    distLine.setMap(null);
+                });
+
+                gMap.addListener('click', function(){
+                    lineBool = false;
+                    playerWin.setMap(null);
+                });
+                if(lineBool == true){
+                    gMap.addListener('mousemove', function(e){
+                       Line.show(e, cent, playerWin);
+                    });
+                }
+            }
+        });
+
+    }
+        return playerMarker;
+};
 
 var newCoords = [];
 var dotBool = false;
@@ -449,7 +708,6 @@ Dots.addDot = function(polyDot){
 };
 
 
-
 // ---- MARKERS ---- //
 // draw the shapes //
 
@@ -530,6 +788,90 @@ var jr1Coords = [
   {lat: 43.269562709017244, lng: -70.90468598281825},
   {lat: 43.269595910269246, lng: -70.90472219264092}
   ];
+
+var bunker1BCenter = '(43.2683703478464, -70.90385735034943)';
+var bunker1BCoords = [
+{lat: 43.268414291541895, lng: -70.90389892458916},
+{lat: 43.26842112722503, lng: -70.90388149023056},
+{lat: 43.268426498118366, lng: -70.90386338531971},
+{lat: 43.26842332440872, lng: -70.90384494513273},
+{lat: 43.2684149018708, lng: -70.90383304283023},
+{lat: 43.26840483144348, lng: -70.90382843278348},
+{lat: 43.26839296054368, lng: -70.90382746886462},
+{lat: 43.26837921287919, lng: -70.9038296691142},
+{lat: 43.268361597249076, lng: -70.90381869929843},
+{lat: 43.26834593466851, lng: -70.9037996828556},
+{lat: 43.26832677031702, lng: -70.9037985932082},
+{lat: 43.268309559015314, lng: -70.90380286797881},
+{lat: 43.26830052613163, lng: -70.90381678193808},
+{lat: 43.26829613175528, lng: -70.90383388102055},
+{lat: 43.26829710828337, lng: -70.90384930372238},
+{lat: 43.26830296745167, lng: -70.90386673808098},
+{lat: 43.26831273273089, lng: -70.90388014912605},
+{lat: 43.26833659662538, lng: -70.90388115495443},
+{lat: 43.268354601347816, lng: -70.90388484299183},
+{lat: 43.26836717413386, lng: -70.90389490127563},
+{lat: 43.26838255443166, lng: -70.9039069712162},
+{lat: 43.26839378448795, lng: -70.9039069712162}
+];
+
+var bunker1ACenter = '(43.26848753096394, -70.90405583381653)';
+var bunker1ACoords = [
+{lat: 43.26852561542855, lng: -70.90410143136978},
+{lat: 43.26852756847739, lng: -70.90408600866795},
+{lat: 43.26852952152615, lng: -70.90406890958548},
+{lat: 43.2685246389041, lng: -70.90405097231269},
+{lat: 43.26851926801944, lng: -70.90403932146728},
+{lat: 43.268508770379846, lng: -70.90403081383556},
+{lat: 43.2684996154601, lng: -70.90402119560167},
+{lat: 43.26849503799973, lng: -70.90400565764867},
+{lat: 43.26848396054417, lng: -70.90399788867217},
+{lat: 43.26846865656297, lng: -70.9039913219749},
+{lat: 43.268453192366735, lng: -70.9039934030443},
+{lat: 43.26844448374141, lng: -70.90400383131055},
+{lat: 43.26843622332496, lng: -70.90401843317522},
+{lat: 43.2684359992199, lng: -70.90403914515264},
+{lat: 43.26844272284808, lng: -70.90405754776839},
+{lat: 43.268454873392606, lng: -70.90405870244922},
+{lat: 43.26846876086721, lng: -70.90405793868513},
+{lat: 43.268475704603276, lng: -70.90406426232562},
+{lat: 43.26848112952135, lng: -70.90407949408643},
+{lat: 43.26849165418047, lng: -70.90410722653445},
+{lat: 43.26848264833852, lng: -70.90409472584724},
+{lat: 43.26850462014971, lng: -70.90410947799683},
+{lat: 43.26851682670806, lng: -70.90411081910133}
+];
+
+var bunker1CCenter = '(43.26761646439604, -70.90348720550537)';
+var bunker1CCoords = [
+{lat: 43.267552012786965, lng: -70.90342015028},
+{lat: 43.267554454137056, lng: -70.9034463018179},
+{lat: 43.267563487131454, lng: -70.90346608310938},
+{lat: 43.2675816751837, lng: -70.90347463265061},
+{lat: 43.2675946753654, lng: -70.90348829515278},
+{lat: 43.26759922237663, lng: -70.90351524297148},
+{lat: 43.26759173048875, lng: -70.90353005798534},
+{lat: 43.267589937623434, lng: -70.90355355874635},
+{lat: 43.26760075966307, lng: -70.90356799133588},
+{lat: 43.26761788915118, lng: -70.90357252542162},
+{lat: 43.26763231312628, lng: -70.90356942804647},
+{lat: 43.267639525112536, lng: -70.90355715052283},
+{lat: 43.26764313110536, lng: -70.90353760071594},
+{lat: 43.26763907487006, lng: -70.90351709697643},
+{lat: 43.267639976368294, lng: -70.90349611627062},
+{lat: 43.267645309810334, lng: -70.90347757929067},
+{lat: 43.26764992960817, lng: -70.90345758196463},
+{lat: 43.26764442719895, lng: -70.90343953667457},
+{lat: 43.26763288714604, lng: -70.90343587844757},
+{lat: 43.26762028134648, lng: -70.90343673154308},
+{lat: 43.26761007228937, lng: -70.90343447588174},
+{lat: 43.26760106160323, lng: -70.90342932473766},
+{lat: 43.26759362664162, lng: -70.90341199701601},
+{lat: 43.267584049923535, lng: -70.90339930984175},
+{lat: 43.26757242578627, lng: -70.90339564846352},
+{lat: 43.267562754726555, lng: -70.90339869260788},
+{lat: 43.26755591894704, lng: -70.90340539813042}
+];
 
 var green1Coords = [
 {lat: 43.26759888669124, lng: -70.90370446443558},
@@ -800,6 +1142,9 @@ var whiteTee1 = Poly.addWhite(white1Coords);
 var blackTee1 = Poly.addBlack(black1Coords);
 var goldTee1 = Poly.addGold(gold1Coords);
 var jrTee1 = Poly.addJr(jr1Coords);
+var bunker1A = Poly.addBunker(bunker1ACoords);
+var bunker1B = Poly.addBunker(bunker1BCoords);
+var bunker1C = Poly.addBunker(bunker1CCoords);
 var blueTee2 = Poly.addBlue(blue2Coords);
 var blackTee2 = Poly.addBlack(black2Coords);
 var whiteTee2 = Poly.addWhite(white2Coords);
@@ -816,12 +1161,13 @@ var green3 = Poly.addGreen(green3Coords);
 var bunker9C = Poly.addBunker(bunker9CCoords);
 
 // ---- TEST (DRAW) OBJECTS ---- //
-
+/*
 google.maps.event.addListener(putGreen,"mouseover",function(e){
  this.setOptions({fillColor: "#00FF00"});
 google.maps.event.addListener(putGreen,"mouseout",function(){
  this.setOptions({fillColor: "#31B404"});
 });
+*/
     /*
     var pths = this.getPaths();
     var pArr = pths.getArray();
@@ -833,9 +1179,9 @@ google.maps.event.addListener(putGreen,"mouseout",function(){
     var lbl = document.getElementById('testlbl');
     lbl.style.visibility = 'visible';
     //alert(this.top);
-    */
+    
 });
-
+*/
 
 
 
@@ -851,3 +1197,4 @@ blueTee1.addListener('click', function(){
 var testMarker = MyMap.addMarker(43.2706725, -70.9046947, 'testMrkr');
 IWin.attach(testMarker, 'click', 'Hello hello');
 */
+})(window, window.google);
