@@ -18,14 +18,50 @@ var getDistance = function(p1, p2) {
 
 
 // ---- DEFINE THE MAP ---- //
+//new instance of markerwin
 //Constructor function
 var MyMap = function(){
   function MyMap() {
     
   }
 };
-// ---- IMAGES ---- //
-var golferImg = "/golfer.png";
+// // ---- IMAGES ---- // //
+    // -- Dependencies: local directory --//
+//Images urls
+/*var golferImg = "/golfer.png";
+var blackGolferImg = "/blackgolfer.png";
+var blueGolferImg = "/bluegolfer.png";
+var whiteGolferImg = "/whitegolfer.png";
+var goldGolferImg = "/goldgolfer.png";
+var jrGolferImg = "/jrgolfer.png";
+var greenImg = "/greenicon.png";
+*/
+var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1";
+var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1';
+var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1";
+var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?dl=1";
+var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1";
+var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1";
+var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1";
+    
+//Function: Select image file/url by prefix
+function getImgByPref(pref){
+    var myImg;
+    if (pref.search('black') > -1){
+        myImg = blackGolferImg;
+    } else if (pref.search('blue') > -1){
+        myImg = blueGolferImg;
+    } else if (pref.search('white') > -1) {
+        myImg = whiteGolferImg;
+    } else if (pref.search('gold') > -1){
+        myImg = goldGolferImg;
+    } else if (pref.search('jr') > -1){
+        myImg = jrGolferImg;
+    } else if (pref.search('green') > -1){
+        myImg = greenImg;
+    }
+    return myImg;
+};
 
 // ---- MAP PROPERTIES ---- //
 
@@ -60,7 +96,6 @@ var polyDots = [];
 var tempPolys = [];
 var lines = [];
 var playerWins = [];
-var markers = [];
 
 //Map events
 //player img (for judging distances)
@@ -144,11 +179,6 @@ gMap.addListener('rightclick', function(e){
   //for each item in the array, add a dragend listener function to modify the position of the coord
   //add a listener function to return the code for the new polygon
 });
-/*
-
-// ---- TOOLBAR FUNCTIONS ---- //
-
-*/
 
 // ---- OTHER OBJECTS ---- //
 
@@ -196,6 +226,7 @@ Line.show = function(e, anch, pWin){
             lat: endLat,
             lng: endLng
         };
+        
         var lineArr = [];
         if(lineArr.length < 1){
             lineArr.push(anchPos);
@@ -204,10 +235,27 @@ Line.show = function(e, anch, pWin){
             lineArr.splice(1, 1);
             lineArr.push(endPos);
         }
-        this.opts.id = 'distanceLine';
-        this.opts.paths = lineArr;
 
-        var newLine = new google.maps.Polygon(this.opts);
+        //Draw an arrow
+        var arrow = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+        };
+        this.opts = {
+            id: 'distanceLine',
+            path: lineArr,
+            map: gMap,
+            icons: [{
+                icon: arrow,
+                offset: '100%'
+            }],
+            strokeColor: '#FFFFFF',
+            strokeWeight: 2,
+            fillColor: '#FFFFFF',
+            strokeOpacity: 0.8,
+            fillOpacity: 0.8
+        };
+
+        var newLine = new google.maps.Polyline(this.opts);
         
         newLine.addListener('click', function(){
             lineBool = false;
@@ -645,589 +693,69 @@ Dots.addDot = function(polyDot){
   });
 };
 
-
-// ---- MARKERS ---- //
-// draw the shapes //
-var markers = [];
-var clubMrkr = MyMap.addMarker(43.270438141949775, -70.90466251349028, 'Clubhouse', 'mrkrClub');
-var blue1Mrkr = MyMap.teeMarker(43.26999526695053, -70.90519845485687, '/bluegolfer.png', 'Hole 1 Blue Tee');
-    markers.push(blue1Mrkr);
-MyMap.teeMarker(43.26988199274653, -70.90506434440613, '/whitegolfer.png', 'Hole 1 White Tee');
-MyMap.teeMarker(43.27013588291049, -70.90537548065186, '/blackgolfer.png', 'Hole 1 Black Tee');
-MyMap.teeMarker(43.26967497382899, -70.90474784374237, '/goldgolfer.png', 'Hole 1 Gold Tee');
-MyMap.teeMarker(43.26960857138553, -70.90468883514404, '/jrgolfer.png', 'Hole 1 Jr Tee');
-//IWin.attach(clubMarker, 'click', 'Clubhouse');
-
 // ---- POLYGONS ---- //
 // draw the shapes //
 
-var putCoords = [
-{lat: 43.27016960558055, lng: -70.90500717735024},
-{lat: 43.270188159040565, lng: -70.90500315403648},
-{lat: 43.270196947519224, lng: -70.90499644851383},
-{lat: 43.27020378300189, lng: -70.90498840188673},
-{lat: 43.270211594981355, lng: -70.90496157979663},
-{lat: 43.270219406960216, lng: -70.90493073439325},
-{lat: 43.2702272189377, lng: -70.90489988898946},
-{lat: 43.27023210142308, lng: -70.90487574910816},
-{lat: 43.27023210142308, lng: -70.90485831474956},
-{lat: 43.270230148428986, lng: -70.90483551597299},
-{lat: 43.270226242440486, lng: -70.90481539940544},
-{lat: 43.27021452447353, lng: -70.90478455400216},
-{lat: 43.270201830006776, lng: -70.9047617552257},
-{lat: 43.270182300052475, lng: -70.90474163865747},
-{lat: 43.27015691110326, lng: -70.9047282276116},
-{lat: 43.270127616148756, lng: -70.90472420429717},
-{lat: 43.27010320367511, lng: -70.90473225092347},
-{lat: 43.270082697189984, lng: -70.90475236749091},
-{lat: 43.27006707319692, lng: -70.90478455399898},
-{lat: 43.27005828469878, lng: -70.90481808161144},
-{lat: 43.27006219069802, lng: -70.90485026811973},
-{lat: 43.270068049696334, lng: -70.9048717257919},
-{lat: 43.27008757968673, lng: -70.9049039122998},
-{lat: 43.270113945165065, lng: -70.90494548653976},
-{lat: 43.27013347514069, lng: -70.90497767304811},
-{lat: 43.27015495810669, lng: -70.9050004718249}
-];
-
-var blue1Coords = [
-{lat: 43.270016295196285, lng: -70.90529819702516},
-{lat: 43.27006512020196, lng: -70.90520968412807},
-{lat: 43.26996161114177, lng: -70.9050983724531},
-{lat: 43.269917668563686, lng: -70.90518286203769}
-];
-
-var white1Coords = [
-  {lat: 43.269916692057706, lng: -70.90517883872633},
-  {lat: 43.26995965813507, lng: -70.90509569024437},
-  {lat: 43.26984345435775, lng: -70.90496694420813},
-  {lat: 43.26979853519254, lng: -70.90504741047914}
-  ];
-  
-var black1Coords = [
-  {lat: 43.27021354797748, lng: -70.90539073323987},
-  {lat: 43.27012761615222, lng: -70.9053089258623},
-  {lat: 43.27009343868851, lng: -70.90536793446114},
-  {lat: 43.27013933413605, lng: -70.90541084980879},
-  {lat: 43.27018034706123, lng: -70.9054591295714}
-  ];
-  
-var gold1Coords = [
-  {lat: 43.26969258441065, lng: -70.90481472885483},
-  {lat: 43.26972773860596, lng: -70.90475169694213},
-  {lat: 43.26966817176307, lng: -70.90469000613496},
-  {lat: 43.26963301753338, lng: -70.90476242577847}
-  ];
-  
-var jr1Coords = [
-  {lat: 43.269629111507214, lng: -70.90475840246455},
-  {lat: 43.26966524224357, lng: -70.90468866502925},
-  {lat: 43.26963008801557, lng: -70.90465379631138},
-  {lat: 43.26960176931443, lng: -70.90462160980269},
-  {lat: 43.269562709017244, lng: -70.90468598281825},
-  {lat: 43.269595910269246, lng: -70.90472219264092}
-  ];
-
-var bunker1BCenter = '(43.2683703478464, -70.90385735034943)';
-var bunker1BCoords = [
-{lat: 43.268414291541895, lng: -70.90389892458916},
-{lat: 43.26842112722503, lng: -70.90388149023056},
-{lat: 43.268426498118366, lng: -70.90386338531971},
-{lat: 43.26842332440872, lng: -70.90384494513273},
-{lat: 43.2684149018708, lng: -70.90383304283023},
-{lat: 43.26840483144348, lng: -70.90382843278348},
-{lat: 43.26839296054368, lng: -70.90382746886462},
-{lat: 43.26837921287919, lng: -70.9038296691142},
-{lat: 43.268361597249076, lng: -70.90381869929843},
-{lat: 43.26834593466851, lng: -70.9037996828556},
-{lat: 43.26832677031702, lng: -70.9037985932082},
-{lat: 43.268309559015314, lng: -70.90380286797881},
-{lat: 43.26830052613163, lng: -70.90381678193808},
-{lat: 43.26829613175528, lng: -70.90383388102055},
-{lat: 43.26829710828337, lng: -70.90384930372238},
-{lat: 43.26830296745167, lng: -70.90386673808098},
-{lat: 43.26831273273089, lng: -70.90388014912605},
-{lat: 43.26833659662538, lng: -70.90388115495443},
-{lat: 43.268354601347816, lng: -70.90388484299183},
-{lat: 43.26836717413386, lng: -70.90389490127563},
-{lat: 43.26838255443166, lng: -70.9039069712162},
-{lat: 43.26839378448795, lng: -70.9039069712162}
-];
-
-var bunker1ACenter = '(43.26848753096394, -70.90405583381653)';
-var bunker1ACoords = [
-{lat: 43.26852561542855, lng: -70.90410143136978},
-{lat: 43.26852756847739, lng: -70.90408600866795},
-{lat: 43.26852952152615, lng: -70.90406890958548},
-{lat: 43.2685246389041, lng: -70.90405097231269},
-{lat: 43.26851926801944, lng: -70.90403932146728},
-{lat: 43.268508770379846, lng: -70.90403081383556},
-{lat: 43.2684996154601, lng: -70.90402119560167},
-{lat: 43.26849503799973, lng: -70.90400565764867},
-{lat: 43.26848396054417, lng: -70.90399788867217},
-{lat: 43.26846865656297, lng: -70.9039913219749},
-{lat: 43.268453192366735, lng: -70.9039934030443},
-{lat: 43.26844448374141, lng: -70.90400383131055},
-{lat: 43.26843622332496, lng: -70.90401843317522},
-{lat: 43.2684359992199, lng: -70.90403914515264},
-{lat: 43.26844272284808, lng: -70.90405754776839},
-{lat: 43.268454873392606, lng: -70.90405870244922},
-{lat: 43.26846876086721, lng: -70.90405793868513},
-{lat: 43.268475704603276, lng: -70.90406426232562},
-{lat: 43.26848112952135, lng: -70.90407949408643},
-{lat: 43.26849165418047, lng: -70.90410722653445},
-{lat: 43.26848264833852, lng: -70.90409472584724},
-{lat: 43.26850462014971, lng: -70.90410947799683},
-{lat: 43.26851682670806, lng: -70.90411081910133}
-];
-
-var bunker1CCenter = '(43.26761646439604, -70.90348720550537)';
-var bunker1CCoords = [
-{lat: 43.267552012786965, lng: -70.90342015028},
-{lat: 43.267554454137056, lng: -70.9034463018179},
-{lat: 43.267563487131454, lng: -70.90346608310938},
-{lat: 43.2675816751837, lng: -70.90347463265061},
-{lat: 43.2675946753654, lng: -70.90348829515278},
-{lat: 43.26759922237663, lng: -70.90351524297148},
-{lat: 43.26759173048875, lng: -70.90353005798534},
-{lat: 43.267589937623434, lng: -70.90355355874635},
-{lat: 43.26760075966307, lng: -70.90356799133588},
-{lat: 43.26761788915118, lng: -70.90357252542162},
-{lat: 43.26763231312628, lng: -70.90356942804647},
-{lat: 43.267639525112536, lng: -70.90355715052283},
-{lat: 43.26764313110536, lng: -70.90353760071594},
-{lat: 43.26763907487006, lng: -70.90351709697643},
-{lat: 43.267639976368294, lng: -70.90349611627062},
-{lat: 43.267645309810334, lng: -70.90347757929067},
-{lat: 43.26764992960817, lng: -70.90345758196463},
-{lat: 43.26764442719895, lng: -70.90343953667457},
-{lat: 43.26763288714604, lng: -70.90343587844757},
-{lat: 43.26762028134648, lng: -70.90343673154308},
-{lat: 43.26761007228937, lng: -70.90343447588174},
-{lat: 43.26760106160323, lng: -70.90342932473766},
-{lat: 43.26759362664162, lng: -70.90341199701601},
-{lat: 43.267584049923535, lng: -70.90339930984175},
-{lat: 43.26757242578627, lng: -70.90339564846352},
-{lat: 43.267562754726555, lng: -70.90339869260788},
-{lat: 43.26755591894704, lng: -70.90340539813042}
-];
-
-var green1Coords = [
-{lat: 43.26759888669124, lng: -70.90370446443558},
-{lat: 43.26759571293844, lng: -70.90372055768967},
-{lat: 43.26757886763239, lng: -70.90375006198883},
-{lat: 43.267550059706835, lng: -70.90376615524292},
-{lat: 43.26753589987406, lng: -70.90376414358616},
-{lat: 43.26752881995644, lng: -70.90376045554876},
-{lat: 43.267494396896865, lng: -70.90375676751137},
-{lat: 43.26746754201422, lng: -70.90373933315277},
-{lat: 43.267458264870164, lng: -70.9037272632122},
-{lat: 43.267442640203306, lng: -70.90368568897247},
-{lat: 43.26743189824256, lng: -70.90363338589668},
-{lat: 43.26741334394219, lng: -70.9036011993885},
-{lat: 43.267395766178744, lng: -70.90356901288033},
-{lat: 43.26738307112419, lng: -70.90353548526764},
-{lat: 43.267374282238734, lng: -70.90348318219185},
-{lat: 43.26737525878164, lng: -70.90346708893776},
-{lat: 43.26738600075242, lng: -70.9034375846386},
-{lat: 43.267414320484455, lng: -70.90340539813042},
-{lat: 43.267442151932414, lng: -70.90339198708534},
-{lat: 43.26745631178703, lng: -70.90339198708534},
-{lat: 43.26747095990901, lng: -70.90339869260788},
-{lat: 43.26749146727389, lng: -70.90340808033943},
-{lat: 43.267500744412885, lng: -70.90342015028},
-{lat: 43.26751221876704, lng: -70.90343423187733},
-{lat: 43.26753345852323, lng: -70.90346977114677},
-{lat: 43.26754684017624, lng: -70.90350874699652},
-{lat: 43.267554362586466, lng: -70.9035343118012},
-{lat: 43.26755964200562, lng: -70.90355057269335},
-{lat: 43.267562388524105, lng: -70.90356431901455},
-{lat: 43.267569834640256, lng: -70.90358108282089},
-{lat: 43.26757886763239, lng: -70.90359047055244},
-{lat: 43.26758521513956, lng: -70.90360924601555},
-{lat: 43.26758912129752, lng: -70.9036286920309},
-{lat: 43.26759595707329, lng: -70.9036617167294},
-{lat: 43.26759888669124, lng: -70.90367864817381}
-  ];
-  
-var blue2Coords = [
-{lat: 43.2677473204833, lng: -70.90292930603027},
-{lat: 43.26779663557752, lng: -70.90293802320957},
-{lat: 43.26784009141949, lng: -70.90294137597084},
-{lat: 43.26785083330823, lng: -70.90285286307335},
-{lat: 43.267788335019866, lng: -70.90283945202827},
-{lat: 43.267728766279056, lng: -70.90283140540123},
-{lat: 43.26768286901278, lng: -70.90282335877419},
-{lat: 43.26764673709794, lng: -70.90281531214714},
-{lat: 43.26761646439604, lng: -70.9028086066246},
-{lat: 43.267588144758044, lng: -70.90280190110207},
-{lat: 43.26758130898138, lng: -70.90283676981926},
-{lat: 43.26757642628329, lng: -70.90287297964096},
-{lat: 43.26757642628329, lng: -70.9028984606266},
-{lat: 43.267607187274706, lng: -70.90289913117886},
-{lat: 43.26765284046346, lng: -70.90291019529104},
-{lat: 43.26770398664229, lng: -70.90292109176517}
-  ];
-  
-var black2Coords = [
-{lat: 43.267925049942285, lng: -70.90289980173111},
-{lat: 43.26794702195474, lng: -70.9029058367014},
-{lat: 43.267978759292085, lng: -70.90290650725365},
-{lat: 43.26801537927616, lng: -70.90291522443295},
-{lat: 43.26803051552977, lng: -70.90291857719421},
-{lat: 43.268040280852716, lng: -70.90283811092377},
-{lat: 43.268008055281115, lng: -70.90283006429672},
-{lat: 43.26793628008299, lng: -70.90281531214714}
-  ];
-  
-var white2Coords = [
-{lat: 43.26732838470516, lng: -70.90284749865532},
-{lat: 43.26737379396728, lng: -70.9028622508049},
-{lat: 43.267430921700566, lng: -70.9028796851635},
-{lat: 43.26744459328691, lng: -70.90279251337051},
-{lat: 43.26738893038047, lng: -70.9027797728777},
-{lat: 43.2673459624881, lng: -70.90276535600424}
-  ];
-  
-var gold2Coords = [
-{lat: 43.26722584753706, lng: -70.90276166796684},
-{lat: 43.267237566079295, lng: -70.90269729495049},
-{lat: 43.267171160976744, lng: -70.90267717838287},
-{lat: 43.26716237206071, lng: -70.90274222195148}
-];
-
-var jr2Coords = [
-{lat: 43.26716334860697, lng: -70.90273886919022},
-{lat: 43.26717116097677, lng: -70.90267851948738},
-{lat: 43.267129169477464, lng: -70.90266779065132},
-{lat: 43.26712135710229, lng: -70.90272814035416}
-];
-
-var green2Coords = [
-{lat: 43.26580788727419, lng: -70.90137228369713},
-{lat: 43.26580691070614, lng: -70.90138971805573},
-{lat: 43.265800563013556, lng: -70.9014118462801},
-{lat: 43.265792262183716, lng: -70.90144336223602},
-{lat: 43.26577028939348, lng: -70.90146012604237},
-{lat: 43.26576003542198, lng: -70.90146213769913},
-{lat: 43.265734156343356, lng: -70.90145610272884},
-{lat: 43.26571804294924, lng: -70.90145006775856},
-{lat: 43.26568581614819, lng: -70.9014393389225},
-{lat: 43.265653589330086, lng: -70.90142861008644},
-{lat: 43.265632104775186, lng: -70.90142324566841},
-{lat: 43.265607690499074, lng: -70.90141251683235},
-{lat: 43.2655852293564, lng: -70.90140178799629},
-{lat: 43.265565697921254, lng: -70.90138971805573},
-{lat: 43.26554909619645, lng: -70.90137362480164},
-{lat: 43.26553835390151, lng: -70.9013494849205},
-{lat: 43.265540307046194, lng: -70.90131998062134},
-{lat: 43.265545189907584, lng: -70.90128779411316},
-{lat: 43.26555007276862, lng: -70.90125426650047},
-{lat: 43.26556179163348, lng: -70.90121805667877},
-{lat: 43.26558132306987, lng: -70.90119659900665},
-{lat: 43.265612573355085, lng: -70.90119391679764},
-{lat: 43.2656418704829, lng: -70.90120196342468},
-{lat: 43.26566921445615, lng: -70.90121269226074},
-{lat: 43.26569265213772, lng: -70.9012234210968},
-{lat: 43.26571218353212, lng: -70.90123817324638},
-{lat: 43.26573269148953, lng: -70.90125158429146},
-{lat: 43.26575319944002, lng: -70.90126365423203},
-{lat: 43.26577077767778, lng: -70.90128242969513},
-{lat: 43.26578444963698, lng: -70.90130656957626},
-{lat: 43.265796168456724, lng: -70.90133339166641},
-{lat: 43.26580691070614, lng: -70.90136021375656}
-];
-
-var blue3Coords = [
-{lat: 43.266972921783825, lng: -70.90173706412315},
-{lat: 43.26703151471595, lng: -70.90173974633217},
-{lat: 43.26703542090942, lng: -70.90161100029945},
-{lat: 43.26700221825695, lng: -70.9016103297472},
-{lat: 43.26697682798108, lng: -70.90160463005304},
-{lat: 43.26697487488251, lng: -70.90167671442032}
-];
-
-var blue3BCoords = [
-{lat: 43.266833275068244, lng: -70.90172901749611},
-{lat: 43.26687038401691, lng: -70.90173035860062},
-{lat: 43.26690163364038, lng: -70.90173035860062},
-{lat: 43.26690553984217, lng: -70.90165793895721},
-{lat: 43.266903098466074, lng: -70.90162105858326},
-{lat: 43.26687502263394, lng: -70.90162139385939},
-{lat: 43.26683364127511, lng: -70.90161887928843}
-];
-
-var black3Coords = [
-{lat: 43.266716088765975, lng: -70.9017276763916},
-{lat: 43.266773705392794, lng: -70.90172901749611},
-{lat: 43.266833275068244, lng: -70.90172968804836},
-{lat: 43.2668342516198, lng: -70.9016227349639},
-{lat: 43.26676345159032, lng: -70.90162156149745},
-{lat: 43.266718286011226, lng: -70.90162097476423}
-];
-
-var white3Coords = [
-{lat: 43.2670334678127, lng: -70.90173840522766},
-{lat: 43.26706667044814, lng: -70.90174242854118},
-{lat: 43.26709791997081, lng: -70.90174242854118},
-{lat: 43.2671311225711, lng: -70.90173706412315},
-{lat: 43.26716139551439, lng: -70.90173974633217},
-{lat: 43.267181902983545, lng: -70.90174242854118},
-{lat: 43.26718776225917, lng: -70.90165391564369},
-{lat: 43.26719118016969, lng: -70.90161971747875},
-{lat: 43.26713234325459, lng: -70.90161468833685},
-{lat: 43.26708632347013, lng: -70.9016135148704},
-{lat: 43.26703597021784, lng: -70.90161292813718}
-];
-
-var gold3Coords = [
-{lat: 43.26729713530083, lng: -70.90137630701065},
-{lat: 43.26729371739621, lng: -70.90145476162434},
-{lat: 43.26742017973771, lng: -70.90146884322166},
-{lat: 43.26742603899042, lng: -70.90138837695122}
-];
-
-var jr3Coords = [
-{lat: 43.26768872824018, lng: -70.9013307094574},
-{lat: 43.26767554497771, lng: -70.90140782296658},
-{lat: 43.2677404847245, lng: -70.90142592787743},
-{lat: 43.267754644509694, lng: -70.90134881436825}
-];
-
-var green3Coords = [
-{lat: 43.268387925328405, lng: -70.90177997946739},
-{lat: 43.26841331501569, lng: -70.90178936719894},
-{lat: 43.26844163426978, lng: -70.90179204940796},
-{lat: 43.268459211731205, lng: -70.90177863836288},
-{lat: 43.26847678918756, lng: -70.90175718069077},
-{lat: 43.26849436663883, lng: -70.90173035860062},
-{lat: 43.26850999103569, lng: -70.90170219540596},
-{lat: 43.268526591952984, lng: -70.90167135000229},
-{lat: 43.26853928676901, lng: -70.90163916349411},
-{lat: 43.26853928676901, lng: -70.90161234140396},
-{lat: 43.268535380672056, lng: -70.9015841782093},
-{lat: 43.26851877975718, lng: -70.90155333280563},
-{lat: 43.26849631968866, lng: -70.90153723955154},
-{lat: 43.26847776571275, lng: -70.901530534029},
-{lat: 43.268456282154645, lng: -70.901530534029},
-{lat: 43.26842503332932, lng: -70.90153187513351},
-{lat: 43.26840159669981, lng: -70.9015291929245},
-{lat: 43.26838304269503, lng: -70.90152516961098},
-{lat: 43.268360582576406, lng: -70.9015104174614},
-{lat: 43.26834105203177, lng: -70.90149834752083},
-{lat: 43.26831761536989, lng: -70.90148761868477},
-{lat: 43.26830003786758, lng: -70.90147286653519},
-{lat: 43.268278554246756, lng: -70.90145945549011},
-{lat: 43.268260976733174, lng: -70.90144604444504},
-{lat: 43.26824535227237, lng: -70.90142995119095},
-{lat: 43.26823070433674, lng: -70.90140715241432},
-{lat: 43.26821019722093, lng: -70.90138703584671},
-{lat: 43.2681926196876, lng: -70.9013856947422},
-{lat: 43.26816722990826, lng: -70.90138703584671},
-{lat: 43.26814867583205, lng: -70.90139240026474},
-{lat: 43.26813793399588, lng: -70.90141385793686},
-{lat: 43.26812816868861, lng: -70.90144068002701},
-{lat: 43.26812035644166, lng: -70.90147286653519},
-{lat: 43.26811449725579, lng: -70.90150505304337},
-{lat: 43.26811449725579, lng: -70.90153992176056},
-{lat: 43.26812575406356, lng: -70.90155814454192},
-{lat: 43.268140171242806, lng: -70.90157262035063},
-{lat: 43.26815421554424, lng: -70.901582540464},
-{lat: 43.26817002646557, lng: -70.90159420604323},
-{lat: 43.268203414918084, lng: -70.90160855383147},
-{lat: 43.268222022381565, lng: -70.90162354172207},
-{lat: 43.2682436128302, lng: -70.9016374242492},
-{lat: 43.26826335702177, lng: -70.9016544604674},
-{lat: 43.26828136176578, lng: -70.9016724396497},
-{lat: 43.26830565290358, lng: -70.90169498696923},
-{lat: 43.2683327515484, lng: -70.90172667056322},
-{lat: 43.26835960604933, lng: -70.90175248682499}
-];
-
-var bunker9CCoords = [
-{lat: 43.269951324396416, lng: -70.90374201536179},
-{lat: 43.2699708544244, lng: -70.90372055768967},
-{lat: 43.269977201682146, lng: -70.90367697179317},
-{lat: 43.269961089411176, lng: -70.90363338589668},
-{lat: 43.26995913640837, lng: -70.90360254049301},
-{lat: 43.26997476042921, lng: -70.90357437729836},
-{lat: 43.269975002706886, lng: -70.90353693519774},
-{lat: 43.26997524498455, lng: -70.90352095076923},
-{lat: 43.269967917530074, lng: -70.90351043958435},
-{lat: 43.26995326261848, lng: -70.90349746384163},
-{lat: 43.26994152981805, lng: -70.90349565223732},
-{lat: 43.26993368824178, lng: -70.90350007565576},
-{lat: 43.26992191109444, lng: -70.90351428691065},
-{lat: 43.269913980829415, lng: -70.90353198058438},
-{lat: 43.269911791328454, lng: -70.90354859246872},
-{lat: 43.269913271339554, lng: -70.90356840519235},
-{lat: 43.269912325353076, lng: -70.90358925517648},
-{lat: 43.26990848037561, lng: -70.90360949747264},
-{lat: 43.2698988374152, lng: -70.90362584218383},
-{lat: 43.26988736351095, lng: -70.90363707393408},
-{lat: 43.26987808673572, lng: -70.90365417301655},
-{lat: 43.26987515722745, lng: -70.90366959571838},
-{lat: 43.26987515722745, lng: -70.903689712286},
-{lat: 43.26987906323845, lng: -70.90370580554008},
-{lat: 43.269888828264804, lng: -70.90372189879417},
-{lat: 43.269906405308305, lng: -70.90374067425728},
-{lat: 43.269930817860306, lng: -70.9037446975708}    
-];
-
-var green18Center = '(43.27144340048304, -70.90403571724892)';  
-var green18Coords = [
-{lat: 43.2713398937677, lng: -70.90414434671402},
-{lat: 43.271354540955116, lng: -70.90414971113205},
-{lat: 43.271374070532815, lng: -70.90414971113205},
-{lat: 43.271388717711986, lng: -70.90414971113205},
-{lat: 43.2714019001702, lng: -70.90414702892303},
-{lat: 43.2714153267451, lng: -70.90414568781853},
-{lat: 43.27142789889889, lng: -70.90414501726627},
-{lat: 43.27144199679645, lng: -70.90414065867662},
-{lat: 43.271468575291365, lng: -70.90413177385926},
-{lat: 43.27149162930368, lng: -70.9041313547641},
-{lat: 43.27151292107235, lng: -70.90413382742554},
-{lat: 43.27153626114486, lng: -70.9041431103833},
-{lat: 43.271560625363634, lng: -70.90414909296669},
-{lat: 43.2715806192732, lng: -70.90414135542233},
-{lat: 43.2715935456512, lng: -70.90412407560507},
-{lat: 43.27160293826443, lng: -70.9040899547108},
-{lat: 43.271603728670435, lng: -70.90406350653211},
-{lat: 43.27159826502292, lng: -70.90404223581572},
-{lat: 43.271590650822894, lng: -70.90402221272598},
-{lat: 43.271575126017645, lng: -70.90399744903152},
-{lat: 43.27155466942905, lng: -70.90397299724373},
-{lat: 43.27153565284757, lng: -70.9039554069318},
-{lat: 43.271516379790945, lng: -70.90393722404428},
-{lat: 43.2714960020168, lng: -70.90392008597348},
-{lat: 43.27147507187994, lng: -70.90390615252005},
-{lat: 43.27145093612542, lng: -70.90389650358424},
-{lat: 43.271434962333686, lng: -70.90389570242996},
-{lat: 43.27141721065665, lng: -70.90389798406181},
-{lat: 43.271394664120166, lng: -70.9039111948183},
-{lat: 43.27137362606221, lng: -70.90393121124163},
-{lat: 43.271357248156804, lng: -70.9039492660803},
-{lat: 43.271342223848144, lng: -70.90396634012671},
-{lat: 43.27132494689805, lng: -70.90398024156798},
-{lat: 43.271317284900825, lng: -70.90399523891568},
-{lat: 43.27131157586209, lng: -70.90401291847229},
-{lat: 43.27130303166386, lng: -70.90403974056244},
-{lat: 43.27130034634417, lng: -70.9040692448616},
-{lat: 43.271305716983434, lng: -70.90410679578781},
-{lat: 43.27131645826057, lng: -70.90413361787796}    
-];
-
+//Put Green
 var putGreen = Poly.addGreen(putCoords);
-var green1 = Poly.addGreen(green1Coords);
+    
+//Hole 1
+var bunker1ACenter = '(43.26848753096394, -70.90405583381653)';
+var bunker1BCenter = '(43.2683703478464, -70.90385735034943)';
+var bunker1CCenter = '(43.26761646439604, -70.90348720550537)';
+var blackTee1 = Poly.addBlack(black1Coords);
 var blueTee1 = Poly.addBlue(blue1Coords);
 var whiteTee1 = Poly.addWhite(white1Coords);
-var blackTee1 = Poly.addBlack(black1Coords);
 var goldTee1 = Poly.addGold(gold1Coords);
 var jrTee1 = Poly.addJr(jr1Coords);
 var bunker1A = Poly.addBunker(bunker1ACoords);
 var bunker1B = Poly.addBunker(bunker1BCoords);
 var bunker1C = Poly.addBunker(bunker1CCoords);
-var blueTee2 = Poly.addBlue(blue2Coords);
+var green1 = Poly.addGreen(green1Coords);
+    
+//Hole 2
 var blackTee2 = Poly.addBlack(black2Coords);
+var blueTee2 = Poly.addBlue(blue2Coords);
 var whiteTee2 = Poly.addWhite(white2Coords);
 var goldTee2 = Poly.addGold(gold2Coords);
 var jrTee2 = Poly.addJr(jr2Coords);
 var green2 = Poly.addGreen(green2Coords);
+var bunker2A = Poly.addBunker(bunker2ACoords);
+var bunker2BCenter = '(43.265868434461865, -70.90236201882362)';
+var bunker2B = Poly.addBunker(bunker2BCoords);
+    
+//Hole 3
+var blackTee3 = Poly.addBlack(black3Coords);
 var blueTee3 = Poly.addBlue(blue3Coords);
 var blueTee3B = Poly.addBlue(blue3BCoords);
-var blackTee3 = Poly.addBlack(black3Coords);
 var whiteTee3 = Poly.addWhite(white3Coords);
 var goldTee3 = Poly.addGold(gold3Coords);
 var jrTee3 = Poly.addJr(jr3Coords);
 var green3 = Poly.addGreen(green3Coords);
+    
+//Hole 4
+//Hole 5
+//Hole 6
+//Hole 7
+//Hole 8
+//Hole 9
 var bunker9C = Poly.addBunker(bunker9CCoords);
+    
+//Hole 10
+//Hole 11
+//Hole 12
+//Hole 13
+//Hole 14
+//Hole 15
+//Hole 16
+//Hole 17
+//Hole 18
+var green18Center = '(43.27144340048304, -70.90403571724892)';
 var green18 = Poly.addGreen(green18Coords);
 
 // ---- DESCRIPTIONS --- //
-/*
-MyMap.teeWin = function(obj, pref, gLat, gLng){
-    var bg;
-    var txt;
-    var mrk = markers[0];
-    if (pref.search('blue') > -1){
-        bg = '#010179;';
-        txt = '#FFFFFF;';
-    }
-    var teeDesc = '<div class="dscTbl" id="' + pref + 'DescTbl"><table border="1px solid #F2F2F2"><tr><td style="background-color: ' + bg + '"><span style="color: ' + txt + '">Hole 1</span></td><td><strong>Par 4</strong></td><td id="' + pref + 'yds">Yds: 306</td><td>Hcp: 18</td></tr></table></div><div class="dscTxt" id="blue1DescTxt"><p>From the blue tees, the first set of bunkers (~180 yds) are reachable for many golfers. Trouble spots off the tee box are the bunkers and right-side trees (with most golfers hitting left-right fades).</p><em>Strategy:&nbsp;</em></br><ul><li>Drive:&nbsp; Easy swing off the tee box, left side fairway.</li><li>2nd:&nbsp; (~150 yds) Wedge to the right-side green (pin hunting is high risk, low payoff, with a greenside bunker and a green that is hard to hold).</li><li>Green:&nbsp; 2-put for par.</li></ul><p><em>Birdie Chance:&nbsp;</em><strong>Low</strong></p></div>';
-    console.log(teeDesc);
-    console.log(obj);
-    console.log(gMap);
-    var mywin = new google.maps.InfoWindow({content: teeDesc});
-    console.log(mywin);
-    mywin.addListener('click',function(e){
-        var myLat = e.latLng.lat();
-        var myLng = e.latLng.lng();
-        var myPos = {
-            lat: myLat,
-            lng: myLng
-        };
-        gMap.setCenter(myPos);
-        gMap.setZoom(24);
-        mywin.open(this.gMap, obj);
-        mrk.addListener('drag', function(e){
-            myLat = e.latLng.lat();
-            myLng = e.latLng.lng();
-            myPos = {
-                lat: myLat,
-                lng: myLng
-            };
-            //var gLat = 43.26751099809115,
-            //    gLng = -70.903599858284;
-            var gPos = {
-                lat: gLat,
-                lng: gLng
-            };
-            var toGreen = getDistance(myPos, gPos);
-                toGreen = Math.round(toGreen);
-            console.log(toGreen);
-            var ydCell = document.getElementById(pref + 'yds');
-            ydCell.innerHTML = toGreen;
-        });
-        return mywin;
-    });
-};
-    
-var blue1Win = new MyMap.teeWin(markers[0], 'blue1', 43.26751099809115, -70.903599858284);
-*/
-    
-var blue1Desc = '<div class="dscTbl" id="blue1DescTbl"><table border="1px solid #F2F2F2"><tr><td style="background-color: #010179;"><span style="color: #FFFFFF;">Hole 1</span></td><td><strong>Par 4</strong></td><td id="blue1yds">Yds: 306</td><td>Hcp: 18</td></tr></table></div><div class="dscTxt" id="blue1DescTxt"><p>From the blue tees, the first set of bunkers (~180 yds) are reachable for many golfers. Trouble spots off the tee box are the bunkers and right-side trees (with most golfers hitting left-right fades).</p><em>Strategy:&nbsp;</em></br><ul><li>Drive:&nbsp; Easy swing off the tee box, left side fairway.</li><li>2nd:&nbsp; (~150 yds) Wedge to the right-side green (pin hunting is high risk, low payoff, with a greenside bunker and a green that is hard to hold).</li><li>Green:&nbsp; 2-put for par.</li></ul><p><em>Birdie Chance:&nbsp;</em><strong>Low</strong></p></div>';
-    
-var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
-    blue1Mrkr.addListener('click',function(e){
-        var myLat = e.latLng.lat();
-        var myLng = e.latLng.lng();
-        var myPos = {
-            lat: myLat,
-            lng: myLng
-        };
-        gMap.setCenter(myPos);
-        gMap.setZoom(24);
-        blue1Win.open(gMap, blue1Mrkr);
-        blue1Mrkr.addListener('drag', function(e){
-            myLat = e.latLng.lat();
-            myLng = e.latLng.lng();
-            myPos = {
-                lat: myLat,
-                lng: myLng
-            };
-            var gLat = 43.26751099809115,
-                gLng = -70.903599858284;
-            var gPos = {
-                lat: gLat,
-                lng: gLng
-            };
-            var toGreen = getDistance(myPos, gPos);
-                toGreen = Math.round(toGreen);
-            var ydCell = document.getElementById('blue1yds');
-            ydCell.innerHTML = toGreen;
-        });
-        return blue1Win;
-    });
+        
+
 // // ---- MarkerWin ----// //
     //Markers and InfoWindows (or combos of both)
     //Create a new MarkerWin object first, then call prototype methods
@@ -1243,28 +771,70 @@ var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
             
         //Prototype:
             MarkerWin.prototype = {
-                _newDesc: function(){
+                newTeeWin: function(obj, pref, par, yds, hcp){
+                    var desc = makeDesc(pref, par, yds, hcp);
+                    var mObj = obj;
+                    var iWin = new google.maps.InfoWindow({content: desc});
+                    obj.addListener('click', function(){
+                        iWin.open(gMap, mObj);
+                    });
+                    infoWins.push(iWin);
+                    return iWin;
+                },
+                newTeeMrkr: function(mLat, mLng, pref, mTitle) {
+                    var markerOpts = {
+                        id: 'teeMrkr-' + pref,
+                        title: mTitle,
+                        position: {
+                          lat: mLat,
+                          lng: mLng
+                        },
+                        draggable: true,
+                        opacity: 0.3,
+                        map: gMap //gMap recreates the map (necessary) upon adding a marker
+                        };
+                    var mImg = getImgByPref(pref);
+                    var newMarker = new google.maps.Marker(markerOpts);
+                        newMarker.setIcon(mImg);
+                        google.maps.event.addListener(newMarker,"mouseover",function(){
+                            newMarker.setOptions({opacity: 0.8});
+                            newMarker.addListener('click', function(){
+                                newMarker.setOpacity(1);
+                            });
+                            newMarker.addListener('drag', function(){
+                                newMarker.setOpacity(1);
+                            });
+                        });
+                        google.maps.event.addListener(newMarker,"mouseout",function(){
+                            newMarker.setOptions({opacity: 0.3});
+                        });
+                    markers.push(newMarker);
+                    return newMarker;
                 },
                 addHover: function(obj, over, out){
                 //add default (standard) events to the marker
-                    //var mLast = markers.length - 1;
-                    //var mObj = markers[mLast];
                     var mObj = obj;
                     mObj.setOpacity(out);
                     google.maps.event.addListener(mObj, 'mouseover', function(){
                         mObj.setOpacity(over);
+                        mObj.addListener('click', function(){
+                            mObj.setOpacity(1);
+                        });
+                        mObj.addListener('drag', function(){
+                            mObj.setOpacity(1);
+                        });
                     });
                     google.maps.event.addListener(mObj, 'mouseout', function(){
                         mObj.setOpacity(out);
                     });
                 },
-                _createMarker: function(mLat, mLng){
+                _createMarker: function(mLat, mLng, pref, mTitle){
                 //generate new marker id (always equal to number of markers in array)
                     var mId = markers.length;
                 //default options
                     var defOpts = {
-                        id: 'mrkr' + mId,
-                        //title: ,
+                        id: 'mrkr' + pref,
+                        title: mTitle,
                         position: {
                             lat: mLat,
                             lng: mLng
@@ -1280,11 +850,25 @@ var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
                     
                     return newMrkr;
                 },
-                addMrkr: function(mLat, mLng){
-                    var newMrkr = this._createMarker(mLat, mLng);
+                addMrkr: function(mLat, mLng, pref, mTitle){
+                    var newMrkr = this._createMarker(mLat, mLng, pref, mTitle);
                     this.addHover(newMrkr, 0.9, 0.75); //default hover behavior (modifiable with .addHover())
                     console.log(markers);
                     return newMrkr;
+                },
+                _editInfoWin: function(obj){
+                    var iWin = obj;
+                    var winContent = iWin.content;
+                    var mytop = 0;
+                    var myleft = window.innerWidth - 300;
+                    var myZ = 11;
+                    //var tArea = document.createElement('textarea');
+                    //tArea.nodeValue = winContent;
+                    //editDiv.innerHTML = tArea;
+                    //var outer = editDiv.outerHTML;
+                    var thisMap = document.getElementById('map-canvas');
+                    var myContent = '<div id="winEdit" style="position: absolute; width: 600px; height: 400px; top: ' + mytop + '; left: ' + myleft + '; z-index: ' + myZ + ';"><table><tr><td></td></tr><tr><td><textarea id="winEditText">' + winContent + '</textarea></td></tr><tr><td><button name="Save">Save</button></td></tr></table></div>';
+                    thisMap.insertAdjacentHTML('beforeBegin', myContent);
                 },
                 _createInfoWin: function(obj){
                     var defContent = '<h3>Info Window Content:</h4>(modifiable with .winContent())';
@@ -1301,15 +885,55 @@ var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
                     //// or a function to remove this listener.
                     obj.addListener('drag', function(){
                         newIWin.close();
-                    })
+                    });
+                    
                     return newIWin;
                 },
                 addInfoWin: function(obj){
                     var newIWin = this._createInfoWin(obj);
+                    //listener for double-clicking the infoWin:
+                    newIWin.addListener('rightclick', function(){
+                        this._editInfoWin(newIWin);
+                    });
                     return newIWin;
                 },
-                winContent: function(obj){
-                    
+                winContent: function(obj, cont){
+                    var newIWin = obj;
+                    obj.content = cont;
+                    return newIWin;
+                },
+                addMrkrEvents: function(mrk, win, pref, gLat, gLng){
+                    var mObj = mrk;
+                    var wObj = win;
+                    mObj.addListener('click',function(e){
+                        var myLat = e.latLng.lat();
+                        var myLng = e.latLng.lng();
+                        var myPos = {
+                            lat: myLat,
+                            lng: myLng
+                        };
+                        gMap.setCenter(myPos);
+                        gMap.setZoom(24);
+                        wObj.open(gMap, mObj);
+                        mObj.addListener('drag', function(e){
+                            myLat = e.latLng.lat();
+                            myLng = e.latLng.lng();
+                            myPos = {
+                                lat: myLat,
+                                lng: myLng
+                            };
+                            var gPos = {
+                                lat: gLat,
+                                lng: gLng
+                            };
+                            var toGreen = getDistance(myPos, gPos);
+                            toGreen = Math.round(toGreen);
+                            var ydId = pref + 'yds';
+                            var ydCell = document.getElementById(ydId);
+                            ydCell.innerHTML = 'Yds: ' + toGreen;
+                        });
+                        return blue1Win;
+                    });
                 }
             };
             
@@ -1322,41 +946,37 @@ var blue1Win = new google.maps.InfoWindow({content: blue1Desc});
         };
         window.MarkerWin = MarkerWin;
 }());
-// ---- TEST (DRAW) OBJECTS ---- //
-/*
-google.maps.event.addListener(putGreen,"mouseover",function(e){
- this.setOptions({fillColor: "#00FF00"});
-google.maps.event.addListener(putGreen,"mouseout",function(){
- this.setOptions({fillColor: "#31B404"});
-});
-*/
-    /*
-    var pths = this.getPaths();
-    var pArr = pths.getArray();
-    var p1 = pArr[0];
-    var coords = p1.getArray();
-    var pLat = coords[0].lat();
-    var pLng = coords[0].lng();
-    var pos = new google.maps.LatLng(pLat, pLng);
-    var lbl = document.getElementById('testlbl');
-    lbl.style.visibility = 'visible';
-    //alert(this.top);
+
+// // ---- Draw Objects Using MarkerWin Function ---- // //
+//Create an instance of the MarkerWin
+    var mwin = new MarkerWin();
+
+// Markers //
+var markers = [];
+//Clubhouse
+    var clubMrkr = mwin.addMrkr(43.270438141949775, -70.90466251349028, 'clubhouse','Clubhouse');
     
-});
-*/
+//Hole 1
+    var black1Mrkr = mwin.newTeeMrkr(43.27013588291049, -70.90537548065186, 'black1', 'Hole 1 Black Tee');
+    var blue1Mrkr = mwin.newTeeMrkr(43.26999526695053, -70.90519845485687, 'blue1', 'Hole 1 Blue Tee');
+    var white1Mrkr = mwin.newTeeMrkr(43.26988199274653, -70.90506434440613, 'white1', 'Hole 1 White Tee');
+    var gold1Mrkr = mwin.newTeeMrkr(43.26967497382899, -70.90474784374237, 'gold1', 'Hole 1 Gold Tee');
+    var jr1Mrkr = mwin.newTeeMrkr(43.269619312962206, -70.90469554066658, 'jr1', 'Hole 1 Jr Tee');
+    
+// InfoWindows //
+var infoWins = [];
+    var black1Win = mwin.newTeeWin(black1Mrkr, 'black1', 4, 326, 18);
+    var blue1Win = mwin.newTeeWin(blue1Mrkr, 'blue1', 4, 306, 18);
+    var white1Win = mwin.newTeeWin(white1Mrkr, 'white1', 4, 289, 18);
+    var gold1Win = mwin.newTeeWin(gold1Mrkr, 'gold1', 4, 258, 18);
+    var jr1Win = mwin.newTeeWin(jr1Mrkr, 'jr1', 4, 251, 18);
 
+// Marker-Window Events //
+    mwin.addMrkrEvents(black1Mrkr, black1Win, 'black1', 43.26751099809115, -70.903599858284);
+    mwin.addMrkrEvents(blue1Mrkr, blue1Win, 'blue1', 43.26751099809115, -70.903599858284);
+    mwin.addMrkrEvents(white1Mrkr, white1Win, 'white1', 43.26751099809115, -70.903599858284);
+    mwin.addMrkrEvents(gold1Mrkr, gold1Win, 'gold1', 43.26751099809115, -70.903599858284);
+    mwin.addMrkrEvents(jr1Mrkr, jr1Win, 'jr1', 43.26751099809115, -70.903599858284);
 
-
-/*
-blueTee1.addListener('click', function(){
-  console.log(blueTee1);
-  //gMap.setCenter({center: blueTee1.getPosition()});
-  //alert(gMap.getTilt());
-  alert(gMap.getHeading());
-});
-*/
-/*
-var testMarker = MyMap.addMarker(43.2706725, -70.9046947, 'testMrkr');
-IWin.attach(testMarker, 'click', 'Hello hello');
-*/
+////end self-instigating function.
 })(window, window.google);
