@@ -28,6 +28,7 @@ var MyMap = function(){
 // // ---- IMAGES ---- // //
     // -- Dependencies: local directory --//
 //Images urls
+/*
 var golferImg = "/golfer.png?raw=true";
 var blackGolferImg = "/blackgolfer.png?raw=true";
 var blueGolferImg = "/bluegolfer.png?raw=true";
@@ -35,15 +36,15 @@ var whiteGolferImg = "/whitegolfer.png?raw=true";
 var goldGolferImg = "/goldgolfer.png?raw=true";
 var jrGolferImg = "/jrgolfer.png?raw=true";
 var greenImg = "/greenicon.png?raw=true";
-/*
-var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1";
-var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1';
-var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1";
-var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?dl=1";
-var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1";
-var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1";
-var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1";
 */
+var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1&raw=true";
+var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1&raw=true';
+var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1&raw=true";
+var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?dl=1&raw=true";
+var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1&raw=true";
+var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1&raw=true";
+var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1&raw=true";
+
     
 //Function: Select image file/url by prefix
 function getImgByPref(pref){
