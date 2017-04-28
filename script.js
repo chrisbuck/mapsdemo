@@ -28,14 +28,14 @@ var MyMap = function(){
 // // ---- IMAGES ---- // //
     // -- Dependencies: local directory --//
 //Images urls
-var golferImg = "/golfer.png";
-var blackGolferImg = "/blackgolfer.png";
-var blueGolferImg = "/bluegolfer.png";
-var whiteGolferImg = "/whitegolfer.png";
-var goldGolferImg = "/goldgolfer.png";
-var jrGolferImg = "/jrgolfer.png";
-var greenImg = "/greenicon.png";
-
+var golferImg = "/golfer.png?raw=true";
+var blackGolferImg = "/blackgolfer.png?raw=true";
+var blueGolferImg = "/bluegolfer.png?raw=true";
+var whiteGolferImg = "/whitegolfer.png?raw=true";
+var goldGolferImg = "/goldgolfer.png?raw=true";
+var jrGolferImg = "/jrgolfer.png?raw=true";
+var greenImg = "/greenicon.png?raw=true";
+/*
 var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1";
 var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1';
 var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1";
