@@ -28,14 +28,14 @@ var MyMap = function(){
 // // ---- IMAGES ---- // //
     // -- Dependencies: local directory --//
 //Images urls
-/*var golferImg = "/golfer.png";
+var golferImg = "/golfer.png";
 var blackGolferImg = "/blackgolfer.png";
 var blueGolferImg = "/bluegolfer.png";
 var whiteGolferImg = "/whitegolfer.png";
 var goldGolferImg = "/goldgolfer.png";
 var jrGolferImg = "/jrgolfer.png";
 var greenImg = "/greenicon.png";
-*/
+
 var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1";
 var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1';
 var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1";
@@ -43,6 +43,7 @@ var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?
 var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1";
 var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1";
 var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1";
+*/
     
 //Function: Select image file/url by prefix
 function getImgByPref(pref){
