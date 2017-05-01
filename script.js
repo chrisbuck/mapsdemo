@@ -994,45 +994,11 @@ var mwin = new MarkerWin();
 var teeMarks = [];
 
 //Clubhouse
-    var clubMrkr = mwin.addMrkr(43.270438141949775, -70.90466251349028, 'clubhouse','Clubhouse');
-    
-//Hole 1
-    
-    
-
-
-//Hole 2
-    var black2Mrkr = mwin.newTeeMrkr(43.267983641957905, -70.90287029743195, 'black2', 'Hole 2 Black Tee');
-    var blue2Mrkr = mwin.newTeeMrkr(43.267745367409425, -70.90289175510406, 'blue2', 'Hole 2 Blue Tee');
-    var white2Mrkr = mwin.newTeeMrkr(43.26739381309361, -70.90283811092377, 'white2', 'Hole 2 White Tee');
-    var gold2Mrkr = mwin.newTeeMrkr(43.26720241044578, -70.9027361869812, 'gold2', 'Hole 2 Gold Tee');
-    var jr2Mrkr = mwin.newTeeMrkr(43.267143817678175, -70.90270936489105, 'jr2', 'Hole 2 Jr Tee');
-    
-//Hole 3
-    var black3Mrkr = mwin.newTeeMrkr(43.266778588155255, -70.90168207883835, 'black3', 'Hole 3 Black Tee');
-    var blue3Mrkr = mwin.newTeeMrkr(43.266887961932085, -70.90168207883835, 'blue3', 'Hole 3 Blue Tee');
-    var white3Mrkr = mwin.newTeeMrkr(43.26711061508483, -70.90168207883835, 'white3', 'Hole 3 White Tee');
-    var gold3Mrkr = mwin.newTeeMrkr(43.26736646989504, -70.90142458677292, 'gold3', 'Hole 3 Gold Tee');
-    var jr3Mrkr = mwin.newTeeMrkr(43.26771216514419, -70.90138703584671, 'jr3', 'Hole 3 Jr Tee');
+var clubMrkr = mwin.addMrkr(43.270438141949775, -70.90466251349028, 'clubhouse','Clubhouse');
 
 // InfoWindows //
 var infoWins = [];
 var teeWins = [];
-    
-
-//Hole 2
-    var black2Win = mwin.newTeeWin(black2Mrkr, 'black2', 4, 283, 11);
-    var blue2Win = mwin.newTeeWin(blue2Mrkr, 'blue2', 4, 261, 11);
-    var white2Win = mwin.newTeeWin(white2Mrkr, 'white2', 4, 225, 11);
-    var gold2Win = mwin.newTeeWin(gold2Mrkr, 'gold2', 4, 202, 11);
-    var jr2Win = mwin.newTeeWin(jr2Mrkr, 'jr2', 4, 195, 11);
-    
-//Hole 2
-    var black3Win = mwin.newTeeWin(black3Mrkr, 'black3', 3, 173, 17);
-    var blue3Win = mwin.newTeeWin(blue3Mrkr, 'blue3', 3, 161, 17);
-    var white3Win = mwin.newTeeWin(white3Mrkr, 'white3', 3, 136, 17);
-    var gold3Win = mwin.newTeeWin(gold3Mrkr, 'gold3', 3, 108, 17);
-    var jr3Win = mwin.newTeeWin(jr3Mrkr, 'jr3', 3, 71, 17);
     
 // Marker-Window Objects & Events //
 //Hole 1
@@ -1042,10 +1008,18 @@ var teeWins = [];
     var gold1Mrkr = mwin.newMrkrWin(43.26967497382899, -70.90474784374237, 'gold1', 'Hole 1 Gold Tee', 4, 258, 13, green1Center);
     var jr1Mrkr = mwin.newMrkrWin(43.269619312962206, -70.90469554066658, 'jr1', 'Hole 1 Jr Tee', 4, 251, 13, green1Center);
 //Hole 2
-    mwin.teeLoop([black2Mrkr, blue2Mrkr, white2Mrkr, gold2Mrkr, jr2Mrkr], 2, green2Center);
-    
+    var black2Mrkr = mwin.newMrkrWin(43.267983641957905, -70.90287029743195, 'black2', 'Hole 2 Black Tee', 4, 283, 11, green2Center);
+    var blue2Mrkr = mwin.newMrkrWin(43.267745367409425, -70.90289175510406, 'blue2', 'Hole 2 Blue Tee', 4, 261, 11, green2Center);
+    var white2Mrkr = mwin.newMrkrWin(43.26739381309361, -70.90283811092377, 'white2', 'Hole 2 White Tee', 4, 225, 11, green2Center);
+    var gold2Mrkr = mwin.newMrkrWin(43.26720241044578, -70.9027361869812, 'gold2', 'Hole 2 Gold Tee', 4, 202, 11, green2Center);
+    var jr2Mrkr = mwin.newMrkrWin(43.267143817678175, -70.90270936489105, 'jr2', 'Hole 2 Jr Tee', 4, 195, 11, green2Center);
 //Hole 3
-    mwin.teeLoop([black3Mrkr, blue3Mrkr, white3Mrkr, gold3Mrkr, jr3Mrkr], 3, green3Center);
+    var black3Mrkr = mwin.newMrkrWin(43.266778588155255, -70.90168207883835, 'black3', 'Hole 3 Black Tee', 3, 173, 17, green3Center);
+    var blue3Mrkr = mwin.newMrkrWin(43.266887961932085, -70.90168207883835, 'blue3', 'Hole 3 Blue Tee', 3, 161, 17, green3Center);
+    var white3Mrkr = mwin.newMrkrWin(43.26711061508483, -70.90168207883835, 'white3', 'Hole 3 White Tee', 3, 136, 17, green3Center);
+    var gold3Mrkr = mwin.newMrkrWin(43.26736646989504, -70.90142458677292, 'gold3', 'Hole 3 Gold Tee', 3, 108, 17, green3Center);
+    var jr3Mrkr = mwin.newMrkrWin(43.26771216514419, -70.90138703584671, 'jr3', 'Hole 3 Jr Tee', 3, 71, 17, green3Center);
+
 
 ////end self-instigating function.
 }(window, window.google));
