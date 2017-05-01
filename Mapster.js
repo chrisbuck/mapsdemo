@@ -1,4 +1,4 @@
-(function(window, google, List){
+(function(window, google){
   /* // //  RESOURCES  //  //
   Plunker: http://plnkr.co/edit/ZbovjXug7hca0FaYb1xC?p=preview
   Google Maps JavaScript API Reference: https://developers.google.com/maps/documentation/javascript/reference
@@ -117,4 +117,4 @@
   
   window.Mapster = Mapster;
   
-}(window, window.google, List))
+}(window, window.google))

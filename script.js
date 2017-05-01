@@ -1,4 +1,47 @@
 (function(window, google){
+
+// ---- MAP PROPERTIES ---- //
+var GoogMap = (function(element, opts){
+    function GoogMap(element, opts){
+        this.gMap = new google.maps.Map(element, opts);
+    }
+    GoogMap.prototype = {
+        addNew: function(element, opts){
+            
+        }
+    }
+    return GoogMap;
+    GoogMap.create = function(element, opts){
+        var myMap = new GoogMap(element, opts);
+        return myMap;
+    };
+    
+    window.GoogMap = GoogMap;
+}());
+//element
+var mapEl = document.getElementById('map-canvas');
+
+//options
+var mapOpts = {
+  center: {
+    lat: 43.2706725,
+    lng: -70.9046947
+  },
+  zoom: 18,
+  mapTypeId: google.maps.MapTypeId.SATELLITE
+};
+map = GoogMap(mapEl, mapOpts);
+    
+//Image urls
+var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1&raw=true";
+var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1&raw=true';
+var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1&raw=true";
+var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?dl=1&raw=true";
+var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1&raw=true";
+var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1&raw=true";
+var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1&raw=true";
+
+
 // ---- MATH ---- //
 var rad = function(x) {
   return x * Math.PI / 180;
@@ -18,32 +61,12 @@ var getDistance = function(p1, p2) {
 
 
 // ---- DEFINE THE MAP ---- //
-//new instance of markerwin
 //Constructor function
 var MyMap = function(){
   function MyMap() {
     
   }
 };
-// // ---- IMAGES ---- // //
-    // -- Dependencies: local directory --//
-//Images urls
-/*
-var golferImg = "/golfer.png?raw=true";
-var blackGolferImg = "/blackgolfer.png?raw=true";
-var blueGolferImg = "/bluegolfer.png?raw=true";
-var whiteGolferImg = "/whitegolfer.png?raw=true";
-var goldGolferImg = "/goldgolfer.png?raw=true";
-var jrGolferImg = "/jrgolfer.png?raw=true";
-var greenImg = "/greenicon.png?raw=true";
-*/
-var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1&raw=true";
-var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1&raw=true';
-var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1&raw=true";
-var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?dl=1&raw=true";
-var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1&raw=true";
-var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1&raw=true";
-var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1&raw=true";
 
     
 //Function: Select image file/url by prefix
@@ -65,32 +88,9 @@ function getImgByPref(pref){
     return myImg;
 };
 
-// ---- MAP PROPERTIES ---- //
-
-//element
-MyMap.element = document.getElementById('map-canvas');
-var mapEl = MyMap.element;
-
-//options
-MyMap.options = {
-  center: {
-    lat: 43.2706725,
-    lng: -70.9046947
-  },
-  zoom: 18,
-  mapTypeId: google.maps.MapTypeId.SATELLITE
-};
-var mapOpts = MyMap.options;
-
-// ---- CREATE THE MAP ---- //
-
-//Factory function
-MyMap.create = function() {
-  return new google.maps.Map(mapEl, mapOpts);
-};
 
 //Map object
-var gMap = MyMap.create();
+//var gMap = MyMap.create();
 var playerBool = false; //toggles the player img (for judging distances)
 var recordBool = false; //toggles recording polygons
 var lineBool = false; //allows drawing of lines
@@ -500,6 +500,7 @@ Poly.addTemp = function(coords, cnt){
 // ---- METHODS ---- //
 
 //Add Marker
+    
 MyMap.addMarker = function(myLat, myLng, myTitle, myId){
   var markerOpts = {
     id: myId,
@@ -538,6 +539,7 @@ MyMap.teeMarker = function(myLat, myLng, myImg, myTitle, myId) {
 };
 
 //Function to add the player marker
+
 MyMap.addPlayer = function(cent){
     if (lineBool == false) {
         var markerOpts = {
@@ -554,6 +556,10 @@ MyMap.addPlayer = function(cent){
         var newPos = cent;
         gMap.setCenter(newPos);
         gMap.setZoom(24);
+        
+        google.maps.event.addListener(playerMarker, 'rightclick', function(){
+            playerMarker.setMap(null);
+        });
 
         playerMarker.addListener('dragend', function(e){
             var cLat = e.latLng.lat();
@@ -734,6 +740,9 @@ var whiteTee3 = Poly.addWhite(white3Coords);
 var goldTee3 = Poly.addGold(gold3Coords);
 var jrTee3 = Poly.addJr(jr3Coords);
 var green3 = Poly.addGreen(green3Coords);
+var bunker3BCenter = '(43.26832347453623, -70.90139508247375)';
+var bunker3B = Poly.addBunker(bunker3BCoords);
+    
     
 //Hole 4
 //Hole 5
@@ -741,9 +750,13 @@ var green3 = Poly.addGreen(green3Coords);
 //Hole 7
 //Hole 8
 //Hole 9
+var green9Center = '(43.26978824841828, -70.90358912944794)';
+var green9 = Poly.addGreen(green9Coords);
 var bunker9C = Poly.addBunker(bunker9CCoords);
     
 //Hole 10
+var white10 = Poly.addWhite(white10Coords);
+    
 //Hole 11
 //Hole 12
 //Hole 13
@@ -757,18 +770,16 @@ var green18 = Poly.addGreen(green18Coords);
 
 // ---- DESCRIPTIONS --- //
         
-
 // // ---- MarkerWin ----// //
     //Markers and InfoWindows (or combos of both)
     //Create a new MarkerWin object first, then call prototype methods
     //Example:
     //  //var mwin = new MarkerWin
     //  //mwin.addMrkr(43.27101081936183, -70.90431869029999)
-(function(){
+(function(window, google){
     //Constructor function:
-        var MarkerWin = (function(element, opts){
+        var MarkerWin = (function(){
             function MarkerWin(){
-                this.gMap = gMap;
             }
             
         //Prototype:
@@ -811,6 +822,12 @@ var green18 = Poly.addGreen(green18Coords);
                             newMarker.setOptions({opacity: 0.3});
                         });
                     markers.push(newMarker);
+                    return newMarker;
+                },
+                newMrkrWin: function(mLat, mLng, pref, mTitle, par, yds, hcp, gPos){
+                    var newMarker = this.newTeeMrkr(mLat, mLng, pref, mTitle);
+                    var newWin = this.newTeeWin(newMarker, pref, par, yds, hcp)
+                    this._teeDrag(newMarker, pref, gPos);
                     return newMarker;
                 },
                 addHover: function(obj, over, out){
@@ -904,9 +921,8 @@ var green18 = Poly.addGreen(green18Coords);
                     obj.content = cont;
                     return newIWin;
                 },
-                addMrkrEvents: function(mrk, win, pref, gLat, gLng){
+                _teeDrag: function(mrk, pref, gPos){
                     var mObj = mrk;
-                    var wObj = win;
                     mObj.addListener('click',function(e){
                         var myLat = e.latLng.lat();
                         var myLng = e.latLng.lng();
@@ -916,26 +932,46 @@ var green18 = Poly.addGreen(green18Coords);
                         };
                         gMap.setCenter(myPos);
                         gMap.setZoom(24);
-                        wObj.open(gMap, mObj);
-                        mObj.addListener('drag', function(e){
+                    });
+                    mObj.addListener('drag', function(e){
+                        var ydId = pref + 'yds';
+                        var ydCell = document.getElementById(ydId);
+                        if (ydCell == null) {
+                        } else {
                             myLat = e.latLng.lat();
                             myLng = e.latLng.lng();
                             myPos = {
                                 lat: myLat,
                                 lng: myLng
                             };
-                            var gPos = {
-                                lat: gLat,
-                                lng: gLng
-                            };
                             var toGreen = getDistance(myPos, gPos);
                             toGreen = Math.round(toGreen);
-                            var ydId = pref + 'yds';
-                            var ydCell = document.getElementById(ydId);
                             ydCell.innerHTML = 'Yds: ' + toGreen;
-                        });
-                        return blue1Win;
+                        }
                     });
+                },
+                addMrkrEvents: function(mrk, pref, gPos){
+                    this._teeDrag(mrk, pref, gPos);
+                },
+                teeLoop: function(mArr, hNum, gCent){
+                    var pref;
+                    var num = mArr.length - 1;
+                    for (var i = 0; num; i++) {
+                        if (i == mArr.length) {break;}
+                        if (i == 0) {
+                            pref = 'black' + hNum;
+                        } else if (i == 1) {
+                            pref = 'blue' + hNum;
+                        } else if (i == 2) {
+                            pref = 'white' + hNum;
+                        } else if (i == 3) {
+                            pref = 'gold' + hNum;
+                        } else if (i == 4) {
+                            pref = 'jr' + hNum;
+                        }
+                        //console.log(mArr[i]);
+                    this._teeDrag(mArr[i], pref, gCent);
+                    }
                 }
             };
             
@@ -943,42 +979,73 @@ var green18 = Poly.addGreen(green18Coords);
     }());
     
     //Factory function:
-        MarkerWin.create = function(element, opts){
-            return new MarkerWin(element, opts);
+        MarkerWin.create = function(){
+            return new MarkerWin();
         };
         window.MarkerWin = MarkerWin;
-}());
+}(window, window.google));
+
 
 // // ---- Draw Objects Using MarkerWin Function ---- // //
 //Create an instance of the MarkerWin
-    var mwin = new MarkerWin();
-
-// Markers //
 var markers = [];
+var mwin = new MarkerWin();
+// Markers //
+var teeMarks = [];
+
 //Clubhouse
     var clubMrkr = mwin.addMrkr(43.270438141949775, -70.90466251349028, 'clubhouse','Clubhouse');
     
 //Hole 1
-    var black1Mrkr = mwin.newTeeMrkr(43.27013588291049, -70.90537548065186, 'black1', 'Hole 1 Black Tee');
-    var blue1Mrkr = mwin.newTeeMrkr(43.26999526695053, -70.90519845485687, 'blue1', 'Hole 1 Blue Tee');
-    var white1Mrkr = mwin.newTeeMrkr(43.26988199274653, -70.90506434440613, 'white1', 'Hole 1 White Tee');
-    var gold1Mrkr = mwin.newTeeMrkr(43.26967497382899, -70.90474784374237, 'gold1', 'Hole 1 Gold Tee');
-    var jr1Mrkr = mwin.newTeeMrkr(43.269619312962206, -70.90469554066658, 'jr1', 'Hole 1 Jr Tee');
     
+    
+
+
+//Hole 2
+    var black2Mrkr = mwin.newTeeMrkr(43.267983641957905, -70.90287029743195, 'black2', 'Hole 2 Black Tee');
+    var blue2Mrkr = mwin.newTeeMrkr(43.267745367409425, -70.90289175510406, 'blue2', 'Hole 2 Blue Tee');
+    var white2Mrkr = mwin.newTeeMrkr(43.26739381309361, -70.90283811092377, 'white2', 'Hole 2 White Tee');
+    var gold2Mrkr = mwin.newTeeMrkr(43.26720241044578, -70.9027361869812, 'gold2', 'Hole 2 Gold Tee');
+    var jr2Mrkr = mwin.newTeeMrkr(43.267143817678175, -70.90270936489105, 'jr2', 'Hole 2 Jr Tee');
+    
+//Hole 3
+    var black3Mrkr = mwin.newTeeMrkr(43.266778588155255, -70.90168207883835, 'black3', 'Hole 3 Black Tee');
+    var blue3Mrkr = mwin.newTeeMrkr(43.266887961932085, -70.90168207883835, 'blue3', 'Hole 3 Blue Tee');
+    var white3Mrkr = mwin.newTeeMrkr(43.26711061508483, -70.90168207883835, 'white3', 'Hole 3 White Tee');
+    var gold3Mrkr = mwin.newTeeMrkr(43.26736646989504, -70.90142458677292, 'gold3', 'Hole 3 Gold Tee');
+    var jr3Mrkr = mwin.newTeeMrkr(43.26771216514419, -70.90138703584671, 'jr3', 'Hole 3 Jr Tee');
+
 // InfoWindows //
 var infoWins = [];
-    var black1Win = mwin.newTeeWin(black1Mrkr, 'black1', 4, 326, 18);
-    var blue1Win = mwin.newTeeWin(blue1Mrkr, 'blue1', 4, 306, 18);
-    var white1Win = mwin.newTeeWin(white1Mrkr, 'white1', 4, 289, 18);
-    var gold1Win = mwin.newTeeWin(gold1Mrkr, 'gold1', 4, 258, 18);
-    var jr1Win = mwin.newTeeWin(jr1Mrkr, 'jr1', 4, 251, 18);
+var teeWins = [];
+    
 
-// Marker-Window Events //
-    mwin.addMrkrEvents(black1Mrkr, black1Win, 'black1', 43.26751099809115, -70.903599858284);
-    mwin.addMrkrEvents(blue1Mrkr, blue1Win, 'blue1', 43.26751099809115, -70.903599858284);
-    mwin.addMrkrEvents(white1Mrkr, white1Win, 'white1', 43.26751099809115, -70.903599858284);
-    mwin.addMrkrEvents(gold1Mrkr, gold1Win, 'gold1', 43.26751099809115, -70.903599858284);
-    mwin.addMrkrEvents(jr1Mrkr, jr1Win, 'jr1', 43.26751099809115, -70.903599858284);
+//Hole 2
+    var black2Win = mwin.newTeeWin(black2Mrkr, 'black2', 4, 283, 11);
+    var blue2Win = mwin.newTeeWin(blue2Mrkr, 'blue2', 4, 261, 11);
+    var white2Win = mwin.newTeeWin(white2Mrkr, 'white2', 4, 225, 11);
+    var gold2Win = mwin.newTeeWin(gold2Mrkr, 'gold2', 4, 202, 11);
+    var jr2Win = mwin.newTeeWin(jr2Mrkr, 'jr2', 4, 195, 11);
+    
+//Hole 2
+    var black3Win = mwin.newTeeWin(black3Mrkr, 'black3', 3, 173, 17);
+    var blue3Win = mwin.newTeeWin(blue3Mrkr, 'blue3', 3, 161, 17);
+    var white3Win = mwin.newTeeWin(white3Mrkr, 'white3', 3, 136, 17);
+    var gold3Win = mwin.newTeeWin(gold3Mrkr, 'gold3', 3, 108, 17);
+    var jr3Win = mwin.newTeeWin(jr3Mrkr, 'jr3', 3, 71, 17);
+    
+// Marker-Window Objects & Events //
+//Hole 1
+    var black1Mrkr = mwin.newMrkrWin(43.27013588291049, -70.90537548065186, 'black1', 'Hole 1 Black Tee', 4, 326, 13, green1Center);
+    var blue1Mrkr = mwin.newMrkrWin(43.26999526695053, -70.90519845485687, 'blue1', 'Hole 1 Blue Tee', 4, 306, 13, green1Center);
+    var white1Mrkr = mwin.newMrkrWin(43.26988199274653, -70.90506434440613, 'white1', 'Hole 1 White Tee', 4, 289, 13, green1Center);
+    var gold1Mrkr = mwin.newMrkrWin(43.26967497382899, -70.90474784374237, 'gold1', 'Hole 1 Gold Tee', 4, 258, 13, green1Center);
+    var jr1Mrkr = mwin.newMrkrWin(43.269619312962206, -70.90469554066658, 'jr1', 'Hole 1 Jr Tee', 4, 251, 13, green1Center);
+//Hole 2
+    mwin.teeLoop([black2Mrkr, blue2Mrkr, white2Mrkr, gold2Mrkr, jr2Mrkr], 2, green2Center);
+    
+//Hole 3
+    mwin.teeLoop([black3Mrkr, blue3Mrkr, white3Mrkr, gold3Mrkr, jr3Mrkr], 3, green3Center);
 
 ////end self-instigating function.
-})(window, window.google);
+}(window, window.google));
