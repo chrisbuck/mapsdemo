@@ -1,27 +1,11 @@
-(function(window, google){
+(function(window, google, mwin){
 
 // ---- MAP PROPERTIES ---- //
-var GoogMap = (function(element, opts){
-    function GoogMap(element, opts){
-        this.gMap = new google.maps.Map(element, opts);
-    }
-    GoogMap.prototype = {
-        addNew: function(element, opts){
-            
-        }
-    }
-    return GoogMap;
-    GoogMap.create = function(element, opts){
-        var myMap = new GoogMap(element, opts);
-        return myMap;
-    };
-    
-    window.GoogMap = GoogMap;
-}());
 //element
 var mapEl = document.getElementById('map-canvas');
 
 //options
+
 var mapOpts = {
   center: {
     lat: 43.2706725,
@@ -30,17 +14,30 @@ var mapOpts = {
   zoom: 18,
   mapTypeId: google.maps.MapTypeId.SATELLITE
 };
-map = GoogMap(mapEl, mapOpts);
-    
-//Image urls
-var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1&raw=true";
-var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1&raw=true';
-var blueGolferImg = "https://www.dropbox.com/s/yigs3afxedjog8h/bluegolfer.png?dl=1&raw=true";
-var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?dl=1&raw=true";
-var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1&raw=true";
-var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1&raw=true";
-var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1&raw=true";
 
+mwin = mwin.create(mapEl, mapOpts);
+gMap = mwin.gMap;
+    
+//var gMap = MapUtil.create(mapEl,mapOpts);
+
+// ---- DEFINE THE MAP ---- //
+//Constructor function
+var MyMap = function(){
+  function MyMap() {
+    
+  }
+};
+
+    
+var playerBool = false; //toggles the player img (for judging distances)
+var recordBool = false; //toggles recording polygons
+var lineBool = false; //allows drawing of lines
+
+//Collections (arrays)
+var polyDots = [];
+var tempPolys = [];
+var lines = [];
+var playerWins = [];
 
 // ---- MATH ---- //
 var rad = function(x) {
@@ -58,130 +55,7 @@ var getDistance = function(p1, p2) {
   var d = R * c;
   return d; // returns the distance in meter
 };
-
-
-// ---- DEFINE THE MAP ---- //
-//Constructor function
-var MyMap = function(){
-  function MyMap() {
     
-  }
-};
-
-    
-//Function: Select image file/url by prefix
-function getImgByPref(pref){
-    var myImg;
-    if (pref.search('black') > -1){
-        myImg = blackGolferImg;
-    } else if (pref.search('blue') > -1){
-        myImg = blueGolferImg;
-    } else if (pref.search('white') > -1) {
-        myImg = whiteGolferImg;
-    } else if (pref.search('gold') > -1){
-        myImg = goldGolferImg;
-    } else if (pref.search('jr') > -1){
-        myImg = jrGolferImg;
-    } else if (pref.search('green') > -1){
-        myImg = greenImg;
-    }
-    return myImg;
-};
-
-
-//Map object
-//var gMap = MyMap.create();
-var playerBool = false; //toggles the player img (for judging distances)
-var recordBool = false; //toggles recording polygons
-var lineBool = false; //allows drawing of lines
-var polyDots = [];
-var tempPolys = [];
-var lines = [];
-var playerWins = [];
-
-//Map events
-//player img (for judging distances)
-gMap.addListener('dblclick', function(e){
-    if (playerBool == false) {
-        //zoom, center, and add the player img/obj
-        var myLat = e.latLng.lat();
-        var myLng = e.latLng.lng();
-        var clickCent = {
-            lat: myLat,
-            lng: myLng
-        };
-        MyMap.addPlayer(clickCent);
-        playerBool = true;
-    } else {
-        //move the playerImg to the new location
-    }
-});
-
-//map rightclick (for creating polygons)
-gMap.addListener('rightclick', function(e){
-  if (recordBool === false) {
-  //get the new position property
-    var myLat = e.latLng.lat();
-	  var myLng = e.latLng.lng();
-	  var polyDot = {
-	    lat: myLat,
-        lng: myLng
-	  };
-	//add a dot to the array
-	  //polyDots.push(polyDot);    //comment out to omit center dot in poly
-	//center the map on the new dot center
-	  gMap.setCenter(polyDot);
-	//zoom to 24
-	  gMap.setZoom(24);
-  //for each item in the array, add a dot, and add a polygon
-    Dots.addDot(polyDot);
-  //add a listener for map clicks using a boolean, stop function in Dots.addDot
-	  recordBool = true;
-	  gMap.addListener('click', function(e){
-	    if (recordBool === true) {
-	      myLat = e.latLng.lat();
-	      myLng = e.latLng.lng();
-	      polyDot = {
-	        lat: myLat,
-          lng: myLng
-	      };
-	      //add a dot to the array
-	      polyDots.push(polyDot);
-	      
-	      //for each
-	      var i;
-	      var dotCoords = [];
-	      polyDots.forEach(function(dotArr){
-	        var dotLat = dotArr.lat;
-	        var dotLng = dotArr.lng;
-	        var dotCoord = {
-	          lat: dotLat,
-	          lng: dotLng
-	        };
-	        dotCoords.push(dotCoord);
-	        //alert(dotCoords);
-	      });
-	      i = dotCoords.length;
-	      //checkTemp(dotCoords, i);
-	      var cnt = tempPolys.length;
-	      var polyItem;
-	      if (tempPolys.length === 0) {
-	        polyItem = Poly.addTemp(dotCoords, i);
-	        tempPolys.push(polyItem);
-	        //alert(tempPolys);
-	      } else {
-	        tempPolys[0].setMap(null);
-          tempPolys.splice(0, 1);
-          polyItem = Poly.addTemp(dotCoords, i);
-          tempPolys.push(polyItem);
-	      }
-	    }
-	  });
-  }
-  //for each item in the array, add a dragend listener function to modify the position of the coord
-  //add a listener function to return the code for the new polygon
-});
-
 // ---- OTHER OBJECTS ---- //
 
 //Markers
@@ -306,184 +180,11 @@ var Toolbar = function(){
   }
 };
 
-
-//Polygons
-
-//color options
-var blueTee = '#08088A';
-var blackTee = '#000000';
-var whiteTee = '#FFFFFF';
-var goldTee = '#DBA901';
-var jrTee = '#21610B';
-var greenColor = '#31B404';
-var bunkerColor = '#F6E3CE';
-var bunkerBorder = '#36220d';
-
 //Poly object (empty constructor)
 var Poly = function(){
   function Poly(){
     
   }
-};
-
-//Default options
-Poly.opts = {
-  map: gMap,
-  strokeOpacity: 0.25,
-  strokeWeight: 2,
-  fillOpacity: 0.15
-};
-
-//Blue polyogons
-Poly.addBlue = function(coords){
-  this.opts.paths = coords;
-  this.opts.strokeColor = blueTee;
-  this.opts.fillColor = blueTee;
-    
-    var blueMrkr = new google.maps.Polygon(this.opts);
-    blueMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    blueMrkr.addListener('mouseover', function(){
-        this.setOptions({fillColor: "#0000f2"});
-        this.setOptions({fillOpacity: 0.3});
-    });
-    blueMrkr.addListener('mouseout', function(){
-        this.setOptions({fillColor: "#08088A"});
-        this.setOptions({fillOpacity: 0.15});
-    });
-
-    return blueMrkr;
-
-};
-
-//White polygons
-Poly.addWhite = function(coords){
-  this.opts.paths = coords;
-  this.opts.strokeColor = whiteTee;
-  this.opts.fillColor = whiteTee;
-  
-    var whiteMrkr = new google.maps.Polygon(this.opts);
-    whiteMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    whiteMrkr.addListener('mouseover', function(){
-        this.setOptions({fillOpacity: 0.3});
-    });
-    whiteMrkr.addListener('mouseout', function(){
-        this.setOptions({fillOpacity: 0.15});
-    });
-
-    return whiteMrkr;
-  
-};
-
-//Black polygons
-Poly.addBlack = function(coords){
-  this.opts.paths = coords;
-  this.opts.strokeColor = blackTee;
-  this.opts.fillColor = blackTee;
-  
-    var blackMrkr = new google.maps.Polygon(this.opts);
-    blackMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    blackMrkr.addListener('mouseover', function(){
-        this.setOptions({fillOpacity: 0.3});
-    });
-    blackMrkr.addListener('mouseout', function(){
-        this.setOptions({fillOpacity: 0.15});
-    });
-
-    return blackMrkr;
-  
-};
-
-//Gold polygons
-Poly.addGold = function(coords){
-  this.opts.paths = coords;
-  this.opts.strokeColor = goldTee;
-  this.opts.fillColor = goldTee;
-  
-    var goldMrkr = new google.maps.Polygon(this.opts);
-    goldMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    goldMrkr.addListener('mouseover', function(){
-        this.setOptions({fillOpacity: 0.3});
-    });
-    goldMrkr.addListener('mouseout', function(){
-        this.setOptions({fillOpacity: 0.15});
-    });
-
-    return goldMrkr;
-  
-};
-
-//Green tee (juniors) polygons
-Poly.addJr = function(coords){
-  this.opts.paths = coords;
-  this.opts.strokeColor = jrTee;
-  this.opts.fillColor = jrTee;
-  
-    var jrMrkr = new google.maps.Polygon(this.opts);
-    jrMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    jrMrkr.addListener('mouseover', function(){
-        this.setOptions({fillColor: '#2e9d08'});
-        this.setOptions({fillOpacity: 0.3});
-    });
-    jrMrkr.addListener('mouseout', function(){
-        this.setOptions({fillColor: '#21610B'});
-        this.setOptions({fillOpacity: 0.15});
-    });
-
-    return jrMrkr;
-  
-};
-
-//Greens polygons
-Poly.addGreen = function(coords, mycap){
-var obj = this;
-    //obj.opts.title = mycap;
-  obj.opts.paths = coords;
-  obj.opts.strokeColor = greenColor;
-  obj.opts.fillColor = greenColor;
-
-    var greenMrkr = new google.maps.Polygon(this.opts);
-    greenMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    greenMrkr.addListener('mouseover', function(){
-        this.setOptions({fillColor: "#00FF00"});
-    });
-    greenMrkr.addListener('mouseout', function(){
-        this.setOptions({fillColor: "#31B404"});
-    });
-
-    return greenMrkr;
-  
-};
-
-
-Poly.addBunker = function(coords) {
-    this.opts.paths = coords;
-    this.opts.strokeColor = bunkerBorder;
-    this.opts.fillColor = bunkerColor;
-    
-    var bunkerMrkr = new google.maps.Polygon(this.opts);
-    bunkerMrkr.addListener('rightclick', function(e){
-        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-    });
-    bunkerMrkr.addListener('mouseover', function(){
-        this.setOptions({fillOpacity: 0.5});
-    });
-    bunkerMrkr.addListener('mouseout', function(){
-        this.setOptions({fillOpacity: 0.15});
-    });
-
-    return bunkerMrkr;
 };
 
 Poly.addTemp = function(coords, cnt){
@@ -500,7 +201,8 @@ Poly.addTemp = function(coords, cnt){
 // ---- METHODS ---- //
 
 //Add Marker
-    
+
+/*    
 MyMap.addMarker = function(myLat, myLng, myTitle, myId){
   var markerOpts = {
     id: myId,
@@ -537,10 +239,11 @@ MyMap.teeMarker = function(myLat, myLng, myImg, myTitle, myId) {
     });
   return newMarker;
 };
-
+*/
 //Function to add the player marker
 
 MyMap.addPlayer = function(cent){
+    var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1&raw=true";
     if (lineBool == false) {
         var markerOpts = {
         id: 'playerMarker',
@@ -575,13 +278,19 @@ MyMap.addPlayer = function(cent){
             oldLine.setMap(null);
         });
         playerMarker.addListener('rightclick', function(){
-            lineBool = false;
-            playerBool = false;
-            var distLine = lines.pop();
-            distLine.setMap(null);
-            var pWins = playerWins.pop();
-            pWins.setMap(null);
-            this.setMap(null);
+            if (playerBool == true) {
+                lineBool = false;
+                playerBool = false;
+                if (lines.length > 0) {
+                    var distLine = lines.pop();
+                    distLine.setMap(null);
+                }
+                if (playerWins.length > 0) {
+                    var pWins = playerWins.pop();
+                    pWins.setMap(null);
+                }
+                playerMarker.setMap(null);
+            }
         });
         playerMarker.addListener('click', function(){
             if (lineBool == false) {
@@ -701,47 +410,124 @@ Dots.addDot = function(polyDot){
   });
 };
 
+//Map events
+gMap.addListener('rightclick', function(e){
+  if (recordBool === false) {
+  //get the new position property
+    var myLat = e.latLng.lat();
+	  var myLng = e.latLng.lng();
+	  var polyDot = {
+	    lat: myLat,
+        lng: myLng
+	  };
+	//add a dot to the array
+	  //polyDots.push(polyDot);    //comment out to omit center dot in poly
+	//center the map on the new dot center
+	  gMap.setCenter(polyDot);
+	//zoom to 24
+	  gMap.setZoom(24);
+  //for each item in the array, add a dot, and add a polygon
+    Dots.addDot(polyDot);
+  //add a listener for map clicks using a boolean, stop function in Dots.addDot
+	  recordBool = true;
+      
+
+  }
+  //for each item in the array, add a dragend listener function to modify the position of the coord
+  //add a listener function to return the code for the new polygon
+});
+gMap.addListener('click', function(e){
+	    if (recordBool === true) {
+	      myLat = e.latLng.lat();
+	      myLng = e.latLng.lng();
+	      polyDot = {
+	        lat: myLat,
+          lng: myLng
+	      };
+	      //add a dot to the array
+	      polyDots.push(polyDot);
+	      
+	      //for each
+	      var i;
+	      var dotCoords = [];
+	      polyDots.forEach(function(dotArr){
+	        var dotLat = dotArr.lat;
+	        var dotLng = dotArr.lng;
+	        var dotCoord = {
+	          lat: dotLat,
+	          lng: dotLng
+	        };
+	        dotCoords.push(dotCoord);
+	        //alert(dotCoords);
+	      });
+	      i = dotCoords.length;
+	      //checkTemp(dotCoords, i);
+	      var cnt = tempPolys.length;
+	      var polyItem;
+	      if (tempPolys.length === 0) {
+	        polyItem = Poly.addTemp(dotCoords, i);
+	        tempPolys.push(polyItem);
+	        //alert(tempPolys);
+	      } else {
+	        tempPolys[0].setMap(null);
+          tempPolys.splice(0, 1);
+          polyItem = Poly.addTemp(dotCoords, i);
+          tempPolys.push(polyItem);
+	      }
+	    }
+	  });
+//player img (for judging distances)
+gMap.addListener('dblclick', function(e){
+    if (playerBool == false) {
+        //zoom, center, and add the player img/obj
+        var myLat = e.latLng.lat();
+        var myLng = e.latLng.lng();
+        var clickCent = {
+            lat: myLat,
+            lng: myLng
+        };
+        MyMap.addPlayer(clickCent);
+        playerBool = true;
+    } else {
+        //move the playerImg to the new location
+    }
+});
 // ---- POLYGONS ---- //
 // draw the shapes //
 
 //Put Green
-var putGreen = Poly.addGreen(putCoords);
+var putGreen = mwin.addGreen(putCoords);
     
 //Hole 1
-var bunker1ACenter = '(43.26848753096394, -70.90405583381653)';
-var bunker1BCenter = '(43.2683703478464, -70.90385735034943)';
-var bunker1CCenter = '(43.26761646439604, -70.90348720550537)';
-var blackTee1 = Poly.addBlack(black1Coords);
-var blueTee1 = Poly.addBlue(blue1Coords);
-var whiteTee1 = Poly.addWhite(white1Coords);
-var goldTee1 = Poly.addGold(gold1Coords);
-var jrTee1 = Poly.addJr(jr1Coords);
-var bunker1A = Poly.addBunker(bunker1ACoords);
-var bunker1B = Poly.addBunker(bunker1BCoords);
-var bunker1C = Poly.addBunker(bunker1CCoords);
-var green1 = Poly.addGreen(green1Coords);
+var blackTee1 = mwin.addBlack(black1Coords);
+var blueTee1 = mwin.addBlue(blue1Coords);
+var whiteTee1 = mwin.addWhite(white1Coords);
+var goldTee1 = mwin.addGold(gold1Coords);
+var jrTee1 = mwin.addJr(jr1Coords);
+var bunker1A = mwin.addBunker(bunker1ACoords);
+var bunker1B = mwin.addBunker(bunker1BCoords);
+var bunker1C = mwin.addBunker(bunker1CCoords);
+var green1 = mwin.addGreen(green1Coords);
     
 //Hole 2
-var blackTee2 = Poly.addBlack(black2Coords);
-var blueTee2 = Poly.addBlue(blue2Coords);
-var whiteTee2 = Poly.addWhite(white2Coords);
-var goldTee2 = Poly.addGold(gold2Coords);
-var jrTee2 = Poly.addJr(jr2Coords);
-var green2 = Poly.addGreen(green2Coords);
-var bunker2A = Poly.addBunker(bunker2ACoords);
-var bunker2BCenter = '(43.265868434461865, -70.90236201882362)';
-var bunker2B = Poly.addBunker(bunker2BCoords);
+var blackTee2 = mwin.addBlack(black2Coords);
+var blueTee2 = mwin.addBlue(blue2Coords);
+var whiteTee2 = mwin.addWhite(white2Coords);
+var goldTee2 = mwin.addGold(gold2Coords);
+var jrTee2 = mwin.addJr(jr2Coords);
+var green2 = mwin.addGreen(green2Coords);
+var bunker2A = mwin.addBunker(bunker2ACoords);
+var bunker2B = mwin.addBunker(bunker2BCoords);
     
 //Hole 3
-var blackTee3 = Poly.addBlack(black3Coords);
-var blueTee3 = Poly.addBlue(blue3Coords);
-var blueTee3B = Poly.addBlue(blue3BCoords);
-var whiteTee3 = Poly.addWhite(white3Coords);
-var goldTee3 = Poly.addGold(gold3Coords);
-var jrTee3 = Poly.addJr(jr3Coords);
-var green3 = Poly.addGreen(green3Coords);
-var bunker3BCenter = '(43.26832347453623, -70.90139508247375)';
-var bunker3B = Poly.addBunker(bunker3BCoords);
+var blackTee3 = mwin.addBlack(black3Coords);
+var blueTee3 = mwin.addBlue(blue3Coords);
+var blueTee3B = mwin.addBlue(blue3BCoords);
+var whiteTee3 = mwin.addWhite(white3Coords);
+var goldTee3 = mwin.addGold(gold3Coords);
+var jrTee3 = mwin.addJr(jr3Coords);
+var green3 = mwin.addGreen(green3Coords);
+var bunker3B = mwin.addBunker(bunker3BCoords);
     
     
 //Hole 4
@@ -750,12 +536,11 @@ var bunker3B = Poly.addBunker(bunker3BCoords);
 //Hole 7
 //Hole 8
 //Hole 9
-var green9Center = '(43.26978824841828, -70.90358912944794)';
-var green9 = Poly.addGreen(green9Coords);
-var bunker9C = Poly.addBunker(bunker9CCoords);
+var green9 = mwin.addGreen(green9Coords);
+var bunker9C = mwin.addBunker(bunker9CCoords);
     
 //Hole 10
-var white10 = Poly.addWhite(white10Coords);
+var white10 = mwin.addWhite(white10Coords);
     
 //Hole 11
 //Hole 12
@@ -765,17 +550,12 @@ var white10 = Poly.addWhite(white10Coords);
 //Hole 16
 //Hole 17
 //Hole 18
-var green18Center = '(43.27144340048304, -70.90403571724892)';
-var green18 = Poly.addGreen(green18Coords);
+var green18 = mwin.addGreen(green18Coords);
 
 // ---- DESCRIPTIONS --- //
         
 // // ---- MarkerWin ----// //
-    //Markers and InfoWindows (or combos of both)
-    //Create a new MarkerWin object first, then call prototype methods
-    //Example:
-    //  //var mwin = new MarkerWin
-    //  //mwin.addMrkr(43.27101081936183, -70.90431869029999)
+/*
 (function(window, google){
     //Constructor function:
         var MarkerWin = (function(){
@@ -984,12 +764,12 @@ var green18 = Poly.addGreen(green18Coords);
         };
         window.MarkerWin = MarkerWin;
 }(window, window.google));
-
+*/
 
 // // ---- Draw Objects Using MarkerWin Function ---- // //
 //Create an instance of the MarkerWin
 var markers = [];
-var mwin = new MarkerWin();
+
 // Markers //
 var teeMarks = [];
 
@@ -1020,6 +800,5 @@ var teeWins = [];
     var gold3Mrkr = mwin.newMrkrWin(43.26736646989504, -70.90142458677292, 'gold3', 'Hole 3 Gold Tee', 3, 108, 17, green3Center);
     var jr3Mrkr = mwin.newMrkrWin(43.26771216514419, -70.90138703584671, 'jr3', 'Hole 3 Jr Tee', 3, 71, 17, green3Center);
 
-
 ////end self-instigating function.
-}(window, window.google));
+}(window, window.google, window.MapUtil || (window.MapUtil = {})));
