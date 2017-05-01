@@ -535,6 +535,7 @@ var bunker3B = mwin.addBunker(bunker3BCoords);
 //Hole 6
 //Hole 7
 //Hole 8
+var green8 = mwin.addGreen(green8Coords);
 //Hole 9
 var green9 = mwin.addGreen(green9Coords);
 var bunker9C = mwin.addBunker(bunker9CCoords);
@@ -799,6 +800,7 @@ var teeWins = [];
     var white3Mrkr = mwin.newMrkrWin(43.26711061508483, -70.90168207883835, 'white3', 'Hole 3 White Tee', 3, 136, 17, green3Center);
     var gold3Mrkr = mwin.newMrkrWin(43.26736646989504, -70.90142458677292, 'gold3', 'Hole 3 Gold Tee', 3, 108, 17, green3Center);
     var jr3Mrkr = mwin.newMrkrWin(43.26771216514419, -70.90138703584671, 'jr3', 'Hole 3 Jr Tee', 3, 71, 17, green3Center);
-
+//Hole 8
+    
 ////end self-instigating function.
 }(window, window.google, window.MapUtil || (window.MapUtil = {})));
