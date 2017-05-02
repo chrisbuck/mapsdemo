@@ -417,6 +417,12 @@ var teeWins = [];
     var white3Mrkr = mwin.newMrkrWin(43.26711061508483, -70.90168207883835, 'white3', 'Hole 3 White Tee', 3, 136, 17, green3Center);
     var gold3Mrkr = mwin.newMrkrWin(43.26736646989504, -70.90142458677292, 'gold3', 'Hole 3 Gold Tee', 3, 108, 17, green3Center);
     var jr3Mrkr = mwin.newMrkrWin(43.26771216514419, -70.90138703584671, 'jr3', 'Hole 3 Jr Tee', 3, 71, 17, green3Center);
+//Hole 4
+    var black4Mrkr = mwin.newMrkrWin(43.26817113602884, -70.90297222137451, 'black4', 'Hole 4 Black Tee', 5, 527, 1, green4Center);
+    var blue4Mrkr = mwin.newMrkrWin(43.26846409435847, -70.90284883975983, 'blue4', 'Hole 4 Blue Tee', 5, 497, 1, green4Center);
+    var white4Mrkr = mwin.newMrkrWin(43.268591042530105, -70.90273350477219, 'white4', 'Hole 4 White Tee', 5, 481, 1, green4Center);
+    var gold4Mrkr = mwin.newMrkrWin(43.26885079719457, -70.90265572071075, 'gold4', 'Hole 4 Gold Tee', 5, 456, 1, green4Center);
+    var jr4Mrkr = mwin.newMrkrWin(43.26907734923001, -70.9024840593338, 'jr4', 'Hole 4 Jr Tee', 5, 428, 1, green4Center);
 //Hole 8
     
 ////end self-instigating function.
