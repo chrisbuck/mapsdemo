@@ -19,8 +19,9 @@ var getDistance = function(p1, p2) {
     
 //Booleans
 //var playerBool = false; //toggles the player img (for judging distances)
-//var recordBool = false; //toggles recording polygons
+var recordBool = false; //toggles recording polygons
 var lineBool = false; //allows drawing of lines
+    
     
 //Image urls
 var blackGolferImg = 'https://www.dropbox.com/s/x86xjzvqjcliseb/blackgolfer.png?dl=1&raw=true';
@@ -29,9 +30,13 @@ var whiteGolferImg = "https://www.dropbox.com/s/hzytbncyboackkf/whitegolfer.png?
 var goldGolferImg = "https://www.dropbox.com/s/cq840ydfci4npto/goldgolfer.png?dl=1&raw=true";
 var jrGolferImg = "https://www.dropbox.com/s/lujzxsl9r68og2u/jrgolfer.png?dl=1&raw=true";
 var greenImg = "https://www.dropbox.com/s/gy6jxbqxksyj2i9/greenicon.png?dl=1&raw=true";
-    
+
+//Arrays
 var markers = [];
 var infoWins = [];
+var myPoints = [];
+var myShapes = [];
+var pointCoords;
 
 //color options
 var blueTee = '#08088A';
@@ -271,11 +276,80 @@ function getImgByPref(pref){
                     polyOpts.paths = coords;
                     polyOpts.strokeColor = blackTee;
                     polyOpts.fillColor = blackTee;
+                    polyOpts.editable = false;
                     polyOpts.map = gMap;
 
                     var newMrkr = new google.maps.Polygon(polyOpts);
-                    newMrkr.addListener('rightclick', function(e){
+                    newMrkr.addListener('dblclick', function(e){
                         alert(e.latLng.lat() + ', ' + e.latLng.lng());
+                    });
+                    google.maps.event.addListenerOnce(newMrkr, 'rightclick', function(e){
+                    //newMrkr.addListener('rightclick', function(e){
+                        var canEdit = newMrkr.editable;
+                        var polyCent = {
+                            lat: e.latLng.lat(),
+                            lng: e.latLng.lng()
+                        };
+                        gMap.setCenter(polyCent);
+                        gMap.setZoom(24);
+                        if(canEdit == true){
+                            newMrkr.setEditable(false);
+                        } else if (canEdit == false){
+                            newMrkr.setEditable(true);
+                        } else {
+                            console.log('Warning: The editable check did not work. (@addBlack)');
+                        }
+                        canEdit = newMrkr.editable;
+                        if (canEdit == true){
+                            newMrkr.addListener('click', function(){
+                                var pthArr = newMrkr.getPaths().getArray();
+                                pthArr = pthArr[0].getArray();
+                                var pthLen = pthArr.length - 1;
+                                var xLt = pthArr[0].lat()
+                                var xLng = pthArr[0].lng();
+                                console.log(xLt);
+                                console.log(xLng);
+
+                                var pathsContent = '[</br>';
+
+                                var i;
+                                var pLen = pthArr.length;
+
+                                for (i = 0; i < pLen; i++) {
+                                    var pLat = pthArr[i].lat();
+                                    var pLng = pthArr[i].lng();
+                                    pathsContent += '{lat: ' + pLat + ', ';
+                                    if (i === (pLen - 1)){
+                                        pathsContent += 'lng: ' + pLng + '}';
+                                    } else {
+                                        pathsContent += 'lng: ' + pLng + '},</br>';
+                                    }
+                                }
+                                pathsContent += '</br>]';
+                                var winContent = pathsContent;
+                                var winOpts = {
+                                    id: 'tempPathsWin',
+                                    content: winContent
+                                };
+                                var pathsWin = new google.maps.InfoWindow(winOpts);
+                                var winPos = {
+                                    lat: pthArr[0].lat(),
+                                    lng: pthArr[0].lng()
+                                };
+                                pathsWin.open(gMap, gMap);
+                                pathsWin.setPosition(winPos);
+
+                                pathsWin.addListener('closeclick', function(){
+                                    newMrkr.setEditable(false);
+                                });
+                                google.maps.event.addListener(newMrkr, 'rightclick', function(){
+                                    pathsWin.setMap(null);
+                                    newMrkr.setEditable(false);
+                                });
+                            });
+                        } else if (canEdit == false) {
+                            //false condition
+                        }
                     });
                     newMrkr.addListener('mouseover', function(){
                         this.setOptions({fillOpacity: 0.3});
@@ -486,7 +560,291 @@ function getImgByPref(pref){
 
                 }
                     return playerMarker;
+                },
+                addTemp: function(coords, cnt){
+                    var newId = 'myPoly' + cnt;
+                    var tempOpts = {};
+                        tempOpts.id = newId;
+                        tempOpts.class = 'tempPolys';
+                        tempOpts.paths = coords;
+                        tempOpts.strokeColor = whiteTee;
+                        tempOpts.fillColor = whiteTee;
+                        tempOpts.editable = true;
+                    var temp = new google.maps.Polygon(tempOpts);
+                    return temp;
+                },
+                addDot: function(polyDot){
+                    var dotClicks = 0;
+                    var recordBool = false;
+                    var centerDot = this._createDot(polyDot);
+                    this._clickCounter(dotClicks);
+                    this._dotEvents(centerDot);
+                },
+                _createDot: function(polyDot){
+                    var dotOpts = {
+                        strokeColor: '#FFFFFF',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 1,
+                        fillColor: '#FFFFFF',
+                        fillOpacity: 0.8,
+                        draggable: true,
+                        map: gMap,
+                        center: polyDot,
+                        zIndex: 4,
+                        radius: 1
+                    };
+                    //Add a new circle
+                    var newDot = new google.maps.Circle(dotOpts);
+                    return newDot;
+                },
+                _dotEvents: function(newDot){
+                    //Rightclick event
+                        newDot.addListener('rightclick', function() {
+                            var shp = myShapes.pop();
+                            var myPaths = shp.getPaths();
+                            myPaths = myPaths.getArray();
+                            myPaths = myPaths[0];
+                            myPaths = myPaths.getArray();
+                              //Info window to display marker options
+
+                            var myLat = newDot.center.lat();
+                            var myLng = newDot.center.lng();
+                            var centContent = '{</br>&nbsp;lat: ' + myLat + ',</br>&nbsp;lng: ' + myLng;
+                                centContent += '</br>};';
+
+                            var pathsContent = '[</br>';
+
+                            var i;
+                            var pLen = myPaths.length;
+
+                            for (i = 0; i < pLen; i++) {
+                                var pLat = myPaths[i].lat();
+                                var pLng = myPaths[i].lng();
+                                pathsContent += '{lat: ' + pLat + ', ';
+                                if (i === (pLen - 1)){
+                                    pathsContent += 'lng: ' + pLng + '}';
+                                } else {
+                                    pathsContent += 'lng: ' + pLng + '},</br>';
+                                }
+                            }
+                            pathsContent += '</br>]';
+                            //var winContent = pathsContent + mrkrContent;
+                            var winContent = '<h3>Geometry:</h3>';
+                                winContent += '<h4>Center:</h4>';
+                                winContent += centContent;
+                                winContent += '<h4>Coordinates:</h4>';
+                                winContent += pathsContent;
+
+                            var pathsWin = new google.maps.InfoWindow({content: winContent});
+                            var winPos = newDot.center;
+                            pathsWin.open(gMap, gMap);
+                            pathsWin.setPosition(winPos);
+
+                            pathsWin.addListener('closeclick', function(){
+                                newDot.setMap(null);
+                                shp.setMap(null);
+                                recordBool = false;
+                            });
+                        });
+                },
+                _recordFalse: function(){
+                    recordBool = false;
+                    console.log('Recording = False (not recording yet)')
+                },
+                _recordTrue: function(){
+                    recordBool = true;
+                },
+                _clickCounter: function(dotClicks){
+                    this._recordTrue();
+                    if (recordBool == true){
+                        gMap.addListener('click', function(e){
+                            dotClicks++;
+                            console.log(dotClicks);
+                            if(dotClicks == 1){
+                                var myLat = e.latLng.lat();
+                                var myLng = e.latLng.lng();
+                                myCoords = {lat: myLat, lng: myLng};
+                                //console.log(myCoords);
+                                myPoints.push(myCoords);
+                                //console.log(myPoints);
+                            } else if (dotClicks > 1) {
+                                var myLat = e.latLng.lat();
+                                var myLng = e.latLng.lng();
+                                myCoords = {lat: myLat, lng: myLng};
+                                console.log('Coords: ' + myCoords);
+                                myPoints.push(myCoords);
+                                console.log('Points: ' + myPoints);
+                                
+                                if (myShapes.length == 0) {
+                                    var newId = 'myPoly';
+                                    var tempOpts = {
+                                        id: newId,
+                                        class: 'tempPolys',
+                                        paths: myPoints,
+                                        strokeColor: whiteTee,
+                                        strokeWeight: 1,
+                                        fillColor: whiteTee,
+                                        editable: true,
+                                        map: gMap
+                                    }
+                                    var shp = new google.maps.Polygon(tempOpts);
+                                    console.log('New Paths');
+                                    var newPaths = shp.getPaths().getArray();
+                                    newPaths = newPaths[0].getArray();
+                                    console.log(newPaths);
+                                    myShapes.push(shp);
+                                    myPoints = newPaths;
+                                } else {
+                                    var shp = myShapes.pop();
+                                    shp.setMap(null);
+                                    var newId = 'myPoly';
+                                    var tempOpts = {
+                                        id: newId,
+                                        class: 'tempPolys',
+                                        paths: myPoints,
+                                        strokeColor: whiteTee,
+                                        fillColor: whiteTee,
+                                        editable: true,
+                                        map: gMap
+                                    }
+                                    shp = new google.maps.Polygon(tempOpts);
+                                    var newPaths = shp.getPaths().getArray();
+                                    newPaths = newPaths[0].getArray();
+                                    console.log(newPaths);
+                                    myShapes.push(shp);
+                                    myPoints = newPaths;
+                                    
+                                }
+                            }
+                        });
+                    }
+                }/*,
+                _countClick: function(){
+                    dotClicks = dotClicks + 1;
+                },
+                _drawShape: function(myPoints){
+                    var pnt;
+                    var shp;
+                    var pths = [];
+                    if (myShapes.length < 1) {
+                        for (pnt in myPoints) {
+                            pths.push(pnt);
+                            console.log(pths);
+                            shp = this.addTemp(pths, dotClicks);
+                            myShapes.push(shp);
+                        }
+                    } else {
+                        shp = myShapes.pop();
+                        shp.setMap(null);
+                        for (pnt in myPoints) {
+                            pths.push(pnt);
+                            console.log(pths);
+                            shp = this.addTemp(pths, dotClicks);
+                            myShapes.push(shp);
+                        }
+                    }
+                },
+                _pushPoint: function(e){
+                    var pLatLng = e.latLng;
+                    console.log(pLatLng);
+                    myPoints.push(pLatLng);
                 }
+                _recordLength: function(dotArr){
+                    
+                },
+                
+                        //Map click
+                    gMap.addListener('click', function(e){
+	    if (recordBool == true) {
+	      myLat = e.latLng.lat();
+	      myLng = e.latLng.lng();
+	      polyDot = {
+              lat: myLat,
+              lng: myLng
+	      };
+	      //add a dot to the array
+	      polyDots.push(polyDot);
+	      
+	      //for each
+	      var i;
+	      var dotCoords = [];
+	      polyDots.forEach(function(dotArr){
+              var dotLat = dotArr.lat;
+              var dotLng = dotArr.lng;
+              var dotCoord = {
+                  lat: dotLat,
+                  lng: dotLng
+                };
+	           dotCoords.push(dotCoord);
+	      });
+	      i = dotCoords.length;
+	      var cnt = tempPolys.length;
+	      var polyItem;
+	      if (tempPolys.length === 0) {
+	        polyItem = mwin.addTemp(dotCoords, i);
+	        tempPolys.push(polyItem);
+	      } else {
+	        tempPolys[0].setMap(null);
+          tempPolys.splice(0, 1);
+          polyItem = mwin.addTemp(dotCoords, i);
+          tempPolys.push(polyItem);
+	      }
+	    }
+	  });
+                        //Click event
+                        newDot.addListener('click', function() {
+                            recordBool = false; //Prevent new points being added to the polygon.
+                            alert('No new points will be added to the polygon.');
+                        });
+                        //Rightclick event
+                        newDot.addListener('rightclick', function() {
+                            var myPaths = tempPolys[0].getPaths();
+                            myPaths = myPaths.getArray();
+                            myPaths = myPaths[0];
+                            myPaths = myPaths.getArray();
+                              //Info window to display marker options
+
+                            var centContent = this.center;
+                                //
+                            var cLatLng = new google.maps.LatLng(centContent);
+                                centContent = cLatLng;
+                                    //
+                            var pathsContent = '';
+
+                            var i;
+                            var pLen = myPaths.length;
+
+                            for (i = 0; i < pLen; i++) {
+                                var pLat = myPaths[i].lat();
+                                var pLng = myPaths[i].lng();
+                                pathsContent += '{lat: ' + pLat + ', ';
+                                if (i === (pLen - 1)){
+                                    pathsContent += 'lng: ' + pLng + '}';
+                                } else {
+                                    pathsContent += 'lng: ' + pLng + '},</br>';
+                                }
+                            }
+
+                            //var winContent = pathsContent + mrkrContent;
+                            var winContent = '<h3>Geometry:</h3>';
+                                winContent += '<h4>Center:</h4>';
+                                winContent += centContent;
+                                winContent += '<h4>Coordinates:</h4>';
+                                winContent += pathsContent;
+
+                            var pathsWin = new google.maps.InfoWindow({content: winContent});
+                            var winPos = newDot.center;
+                            pathsWin.open(gMap, gMap);
+                            pathsWin.setPosition(winPos);
+
+                            pathsWin.addListener('closeclick', function(){
+                                newDot.setMap(null);
+                                tempPolys[0].setMap(null);
+                                recordBool = false;
+                            });
+                        });
+                    }
+                    */
             };
             
             return MapUtil;
