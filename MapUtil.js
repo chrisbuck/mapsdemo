@@ -283,15 +283,9 @@ function getImgByPref(pref){
                     newMrkr.addListener('dblclick', function(e){
                         alert(e.latLng.lat() + ', ' + e.latLng.lng());
                     });
-                    google.maps.event.addListenerOnce(newMrkr, 'rightclick', function(e){
-                    //newMrkr.addListener('rightclick', function(e){
+                    //google.maps.event.addListenerOnce(newMrkr, 'rightclick', function(e){
+                    newMrkr.addListener('rightclick', function(e){
                         var canEdit = newMrkr.editable;
-                        var polyCent = {
-                            lat: e.latLng.lat(),
-                            lng: e.latLng.lng()
-                        };
-                        gMap.setCenter(polyCent);
-                        gMap.setZoom(24);
                         if(canEdit == true){
                             newMrkr.setEditable(false);
                         } else if (canEdit == false){
@@ -301,6 +295,12 @@ function getImgByPref(pref){
                         }
                         canEdit = newMrkr.editable;
                         if (canEdit == true){
+                        var polyCent = {
+                            lat: e.latLng.lat(),
+                            lng: e.latLng.lng()
+                        };
+                        gMap.setCenter(polyCent);
+                        gMap.setZoom(24);
                             newMrkr.addListener('click', function(){
                                 var pthArr = newMrkr.getPaths().getArray();
                                 pthArr = pthArr[0].getArray();
@@ -342,7 +342,7 @@ function getImgByPref(pref){
                                 pathsWin.addListener('closeclick', function(){
                                     newMrkr.setEditable(false);
                                 });
-                                google.maps.event.addListener(newMrkr, 'rightclick', function(){
+                                google.maps.event.addListenerOnce(newMrkr, 'rightclick', function(){
                                     pathsWin.setMap(null);
                                     newMrkr.setEditable(false);
                                 });
