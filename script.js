@@ -7,18 +7,77 @@ var mapEl = document.getElementById('map-canvas');
 //options
 
 var mapOpts = {
-  center: {
-    lat: 43.2706725,
-    lng: -70.9046947
-  },
-  zoom: 18,
-  mapTypeId: google.maps.MapTypeId.SATELLITE
+    center: {
+        lat: 43.2706725,
+        lng: -70.9046947
+    },
+    zoom: 20,
+    minZoom: 15,
+    keyboardShortcuts: true,
+    mapTypeControlOptions: {
+        mapTypeIds: 'satellite'
+        //style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR //DROPDOWN_MENU, HORIZONTAL_BAR, DEFAULT
+        //position: google.maps.ControlPosition.TOP_LEFT
+    },
+    mapTypeId: google.maps.MapTypeId.SATELLITE
 };
+    
+//bounds (doesn't actually cut off the map at the boundary)
+/*
+console command:
+gMap.fitBounds({
+    east: -70.90400805449218,
+    north: 43.28042099516316,
+    west: -70.92713942503661,
+    south: 43.26448514498841
+    })
+*/
+    
 
 mwin = mwin.create(mapEl, mapOpts);
 gMap = mwin.gMap;
-    
-//var gMap = MapUtil.create(mapEl,mapOpts);
+
+var mapBounds = {
+    east: -70.88126292204589,
+    north: 43.28057720833307,
+    west: -70.92821230864257,
+    south: 43.26464139906769
+    };
+
+//Keep within bounds function (for zoom):
+    gMap.addListener('zoom_changed', function(){
+        var myZoom = gMap.getZoom();
+        if (myZoom <= 15){
+            gMap.fitBounds(mapBounds);
+        }
+    });
+// ---- FUNCTIONS ---- //
+//Elevation:
+function cb_elevDiff(results){
+    var resB = results[1];
+    var metersB = resB.elevation;
+    var yardsB = metersB * 1.09361;
+    var resA = results[0];
+    var metersA = resA.elevation;
+    var yardsA = metersA * 1.09361;
+    var diff = Math.round(yardsA - yardsB);
+    var diffStr = diff + ' yds';
+    var diffSpan = document.getElementById('elevSpan');
+    diffSpan.innerHTML = diffStr;
+}
+function getElevByPoints (locArr, callback){
+                    var eServ = new google.maps.ElevationService();
+                    var locObj = {
+                        locations: locArr
+                    };
+                    eServ.getElevationForLocations(locObj, callback);
+                    //return queryRes;
+}
+function showElevDiff(pntB, pntA){
+    var locArr = [];
+    Array.prototype.push.apply(locArr, [pntB, pntA]);
+    getElevByPoints(locArr, cb_elevDiff);
+}
 
 // ---- DEFINE THE MAP ---- //
 //Constructor function
@@ -95,12 +154,15 @@ Line.show = function(e, anch, pWin){
             lat: anchLat,
             lng: anchLng
         };
+        
         var endLat = e.latLng.lat();
         var endLng = e.latLng.lng();
         var endPos = {
             lat: endLat,
             lng: endLng
         };
+        
+        showElevDiff(endPos, anchPos);
         
         var lineArr = [];
         if(lineArr.length < 1){
@@ -228,7 +290,7 @@ MyMap.addPlayer = function(cent){
             if (lineBool == false) {
                 //boolean:true allows the line and distance functions to execute
                 lineBool = true;
-                var winContent = '<strong>Distance:</strong> &nbsp; <span id="distanceSpan"></span>';
+                var winContent = '<p><strong>Distance:</strong> &nbsp; <span id="distanceSpan"></span></p><p><strong>Elevation +/-:</strong> &nbsp; <span id="elevSpan"></span></p>';
                 var defaults = {
                     id: 'playerWin',
                     content: winContent
@@ -372,10 +434,15 @@ var goldTee8 = mwin.addGold(gold8Coords);
 var jrTee8 = mwin.addJr(jr8Coords);
 var green8 = mwin.addGreen(green8Coords);
 //Hole 9
+var blackTee9 = mwin.addBlack(black9Coords);
+var blueTee9 = mwin.addBlue(blue9Coords);
+var whiteTee9 = mwin.addWhite(white9Coords);
+var goldTee9 = mwin.addGold(gold9Coords);
+var jrTee9 = mwin.addJr(jr9Coords);
 var green9 = mwin.addGreen(green9Coords);
 var bunker9C = mwin.addBunker(bunker9CCoords);
 //Hole 10
-var white10 = mwin.addWhite(white10Coords);
+//var white10 = mwin.addWhite(white10Coords);
 //Hole 11
 //Hole 12
 //Hole 13
@@ -384,7 +451,7 @@ var white10 = mwin.addWhite(white10Coords);
 //Hole 16
 //Hole 17
 //Hole 18
-var green18 = mwin.addGreen(green18Coords);
+//var green18 = mwin.addGreen(green18Coords);
 
 // // ---- Draw Objects Using MarkerWin Function ---- // //
 
@@ -423,7 +490,36 @@ var teeWins = [];
     var white4Mrkr = mwin.newMrkrWin(43.268591042530105, -70.90273350477219, 'white4', 'Hole 4 White Tee', 5, 481, 1, green4Center);
     var gold4Mrkr = mwin.newMrkrWin(43.26885079719457, -70.90265572071075, 'gold4', 'Hole 4 Gold Tee', 5, 456, 1, green4Center);
     var jr4Mrkr = mwin.newMrkrWin(43.26907734923001, -70.9024840593338, 'jr4', 'Hole 4 Jr Tee', 5, 428, 1, green4Center);
+//Hole 5
+    var black5Mrkr = mwin.newMrkrWin(43.27226656554652, -70.89851975440979, 'black5', 'Hole 5 Black Tee', 3, 187, 15, green5Center);
+    var blue5Mrkr = mwin.newMrkrWin(43.272349564964685, -70.89865386486053, 'blue5', 'Hole 5 Blue Tee', 3, 173, 15, green5Center);
+    var white5Mrkr = mwin.newMrkrWin(43.272872946923556, -70.89889660477638, 'white5', 'Hole 5 White Tee', 3, 123, 15, green5Center);
+    var gold5Mrkr = mwin.newMrkrWin(43.2729149344603, -70.89906558394432, 'gold5', 'Hole 5 Gold Tee', 3, 109, 15, green5Center);
+    var jr5Mrkr = mwin.newMrkrWin(43.27293641644464, -70.89913800358772, 'jr5', 'Hole 5 Jr Tee', 3, 103, 15, green5Center);
+//Hole 6
+    var black6Mrkr = mwin.newMrkrWin(43.27325376305718, -70.89914336800575, 'black6', 'Hole 6 Black Tee', 4, 396, 3, green6Center);
+    var blue6Mrkr = mwin.newMrkrWin(43.27353302670735, -70.89936196804047, 'blue6', 'Hole 6 Blue Tee', 4, 360, 3, green6Center);
+    var white6Mrkr = mwin.newMrkrWin(43.27377127859866, -70.89954569935799, 'white6', 'Hole 6 White Tee', 4, 330, 3, green6Center);
+    var gold6Mrkr = mwin.newMrkrWin(43.274081785811155, -70.89973613619804, 'gold6', 'Hole 6 Gold Tee', 4, 292, 3, green6Center);
+    var jr6Mrkr = mwin.newMrkrWin(43.27422727449457, -70.89991182088852, 'jr6', 'Hole 6 Jr Tee', 4, 271, 3, green6Center);
+//Hole 7
+    var black7Mrkr = mwin.newMrkrWin(43.2768128140178, -70.90291321277618, 'black7', 'Hole 7 Black Tee', 4, 363, 5, green7Center);
+    var blue7Mrkr = mwin.newMrkrWin(43.27670150528916, -70.90312376618385, 'blue7', 'Hole 7 Blue Tee', 4, 357, 5, green7Center);
+    var white7Mrkr = mwin.newMrkrWin(43.27657652682487, -70.903150588274, 'white7', 'Hole 7 White Tee', 4, 345, 5, green7Center);
+    var gold7Mrkr = mwin.newMrkrWin(43.276220141513186, -70.90313047170639, 'gold7', 'Hole 7 Gold Tee', 4, 307, 5, green7Center);
+    var jr7Mrkr = mwin.newMrkrWin(43.276023884601045, -70.9030057489872, 'jr7', 'Hole 7 Jr Tee', 4, 283, 5, green7Center);
 //Hole 8
+    var black8Mrkr = mwin.newMrkrWin(43.2734480760123, -70.90234994888306, 'black8', 'Hole 8 Black Tee', 4, 312, 9, green8Center);
+    var blue8Mrkr = mwin.newMrkrWin(43.273319185076176, -70.90215414762497, 'blue8', 'Hole 8 Blue Tee', 4, 292, 9, green8Center);
+    var white8Mrkr = mwin.newMrkrWin(43.27322251669492, -70.90198114514351, 'white8', 'Hole 8 White Tee', 4, 274, 9, green8Center);
+    var gold7Mrkr = mwin.newMrkrWin(43.27305359077118, -70.90160965919495, 'gold8', 'Hole 8 Gold Tee', 4, 239, 9, green8Center);
+    var jr8Mrkr = mwin.newMrkrWin(43.27297254521939, -70.90149030089378, 'jr8', 'Hole 8 Jr Tee', 4, 226, 9, green8Center);
+//Hole 9
+    var black9Mrkr = mwin.newMrkrWin(43.27172169596734, -70.89997887611389, 'black9', 'Hole 9 Black Tee', 4, 363, 7, green9Center);
+    var blue9Mrkr = mwin.newMrkrWin(43.27158108367115, -70.90031951665878, 'blue9', 'Hole 9 Blue Tee', 4, 332, 7, green9Center);
+    var white9Mrkr = mwin.newMrkrWin(43.27148831843679, -70.9004294872284, 'white9', 'Hole 9 White Tee', 4, 318, 7, green9Center);
+    var gold9Mrkr = mwin.newMrkrWin(43.271141668151756, -70.90076074004173, 'gold9', 'Hole 9 Gold Tee', 4, 274, 7, green9Center);
+    var jr9Mrkr = mwin.newMrkrWin(43.27107429082491, -70.90083986520767, 'jr9', 'Hole 9 Jr Tee', 4, 265, 7, green9Center);
     
 ////end self-instigating function.
 }(window, window.google, window.MapUtil || (window.MapUtil = {})));

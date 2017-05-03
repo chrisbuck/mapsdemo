@@ -1,0 +1,22 @@
+{
+  "name": "mapsdemo",
+  "version": "1.0.0",
+  "description": "Maps Demo with NodeJS",
+  "main": "nodemodule.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrisbuck/mapsdemo.git"
+  },
+  "author": "Chris Buck",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chrisbuck/mapsdemo/issues"
+  },
+  "homepage": "https://github.com/chrisbuck/mapsdemo#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}

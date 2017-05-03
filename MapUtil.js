@@ -272,13 +272,15 @@ function getImgByPref(pref){
                     this._teeDrag(mArr[i], pref, gCent);
                     }
                 },
-                addBlack: function(coords){
+                _setPolyOpts: function(coords, colr){
                     polyOpts.paths = coords;
-                    polyOpts.strokeColor = blackTee;
-                    polyOpts.fillColor = blackTee;
+                    polyOpts.strokeColor = colr;
+                    polyOpts.fillColor = colr;
                     polyOpts.editable = false;
                     polyOpts.map = gMap;
-
+                    return polyOpts;
+                },
+                _newTeePoly:function(polyOpts){
                     var newMrkr = new google.maps.Polygon(polyOpts);
                     newMrkr.addListener('dblclick', function(e){
                         alert(e.latLng.lat() + ', ' + e.latLng.lng());
@@ -359,128 +361,47 @@ function getImgByPref(pref){
                     });
 
                     return newMrkr;
-
+                },
+                addBlack: function(coords){
+                    var colr = blackTee;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
+                    return newMrkr;
                 },
                 addBlue: function(coords){
-                    polyOpts.paths = coords;
-                    polyOpts.strokeColor = blueTee;
-                    polyOpts.fillColor = blueTee;
-                    polyOpts.map = gMap;
-
-                    var newMrkr = new google.maps.Polygon(polyOpts);
-                        newMrkr.addListener('rightclick', function(e){
-                        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-                    });
-                    newMrkr.addListener('mouseover', function(){
-                        newMrkr.setOptions({fillColor: "#0000f2"});
-                        newMrkr.setOptions({fillOpacity: 0.3});
-                    });
-                    newMrkr.addListener('mouseout', function(){
-                        newMrkr.setOptions({fillColor: "#08088A"});
-                        newMrkr.setOptions({fillOpacity: 0.15});
-                    });
-
+                    var colr = blueTee;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
                     return newMrkr;
-
                 },
                 addWhite: function(coords){
-                    polyOpts.paths = coords;
-                    polyOpts.strokeColor = whiteTee;
-                    polyOpts.fillColor = whiteTee;
-                    polyOpts.map = gMap;
-
-                    var newMrkr = new google.maps.Polygon(polyOpts);
-                    newMrkr.addListener('rightclick', function(e){
-                        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-                    });
-                    newMrkr.addListener('mouseover', function(){
-                        newMrkr.setOptions({fillOpacity: 0.3});
-                    });
-                    newMrkr.addListener('mouseout', function(){
-                        newMrkr.setOptions({fillOpacity: 0.15});
-                    });
-
+                    var colr = whiteTee;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
                     return newMrkr;
-
                 },
                 addGold: function(coords){
-                    polyOpts.paths = coords;
-                    polyOpts.strokeColor = goldTee;
-                    polyOpts.fillColor = goldTee;
-                    polyOpts.map = gMap;
-  
-                    var newMrkr = new google.maps.Polygon(polyOpts);
-                    newMrkr.addListener('rightclick', function(e){
-                        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-                    });
-                    newMrkr.addListener('mouseover', function(){
-                        newMrkr.setOptions({fillOpacity: 0.3});
-                    });
-                    newMrkr.addListener('mouseout', function(){
-                        newMrkr.setOptions({fillOpacity: 0.15});
-                    });
-
+                    var colr = goldTee;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
                     return newMrkr;
-
                 },
                 addJr: function(coords){
-                    polyOpts.paths = coords;
-                    polyOpts.strokeColor = jrTee;
-                    polyOpts.fillColor = jrTee;
-                    polyOpts.map = gMap;
-
-                    var newMrkr = new google.maps.Polygon(polyOpts);
-                    newMrkr.addListener('rightclick', function(e){
-                        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-                    });
-                    newMrkr.addListener('mouseover', function(){
-                        newMrkr.setOptions({fillColor: '#2e9d08'});
-                        newMrkr.setOptions({fillOpacity: 0.3});
-                    });
-                    newMrkr.addListener('mouseout', function(){
-                        newMrkr.setOptions({fillColor: '#21610B'});
-                        newMrkr.setOptions({fillOpacity: 0.15});
-                    });
-
+                    var colr = jrTee;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
                     return newMrkr;
-
                 },
                 addGreen: function(coords){
-                    polyOpts.paths = coords;
-                    polyOpts.strokeColor = greenColor;
-                    polyOpts.fillColor = greenColor;
-                    polyOpts.map = gMap;
-
-                    var newMrkr = new google.maps.Polygon(polyOpts);
-                    newMrkr.addListener('rightclick', function(e){
-                        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-                    });
-                    newMrkr.addListener('mouseover', function(){
-                        newMrkr.setOptions({fillColor: "#00FF00"});
-                    });
-                    newMrkr.addListener('mouseout', function(){
-                        newMrkr.setOptions({fillColor: "#31B404"});
-                    });
-
+                    var colr = greenColor;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
                     return newMrkr;
                 },
                 addBunker: function(coords) {
-                    polyOpts.paths = coords;
-                    polyOpts.strokeColor = bunkerBorder;
-                    polyOpts.fillColor = bunkerColor;
-                    polyOpts.map = gMap;
-    
-                    var newMrkr = new google.maps.Polygon(polyOpts);
-                    newMrkr.addListener('rightclick', function(e){
-                        alert(e.latLng.lat() + ', ' + e.latLng.lng());
-                    });
-                    newMrkr.addListener('mouseover', function(){
-                        newMrkr.setOptions({fillOpacity: 0.5});
-                    });
-                    newMrkr.addListener('mouseout', function(){
-                        newMrkr.setOptions({fillOpacity: 0.15});
-                    });
-
+                    var colr = bunkerColor;
+                    var polyOpts = this._setPolyOpts(coords, colr);
+                    var newMrkr = this._newTeePoly(polyOpts);
                     return newMrkr;
                 },
                 addPlayer: function(cent){
@@ -530,7 +451,7 @@ function getImgByPref(pref){
                         if (lineBool == false) {
                             //boolean:true allows the line and distance functions to execute
                             lineBool = true;
-                            var winContent = '<strong>Distance:</strong> &nbsp; <span id="distanceSpan"></span>';
+                            var winContent = '<p><strong>Distance:</strong> &nbsp; <span id="distanceSpan"></span></p><p><strong>Elevation +/-:</strong> &nbsp; <span id="elevSpan"></span></p>';
                             var defaults = {
                                 id: 'playerWin',
                                 content: winContent
@@ -718,7 +639,43 @@ function getImgByPref(pref){
                             }
                         });
                     }
-                }/*,
+                },
+                cb_elevFeet: function (results){
+                        var res = results[0];
+                        var inMeters = res.elevation;
+                        var inFeet = inMeters * 3.28084;
+                        var inYards = inMeters * 1.09361;
+                        var resultStr = inFeet + ' feet';
+                        var resultStr = inYards + ' feet';
+                        console.log(resultStr);
+                        return inFeet;
+                    },
+                cb_elevYards: function (results){
+                        var res = results[0];
+                        var inMeters = res.elevation;
+                        var inFeet = inMeters * 3.28084;
+                        var inYards = inMeters * 1.09361;
+                        var resultStr = inFeet + ' feet';
+                        var resultStr = inYards + ' feet';
+                        console.log(resultStr);
+                        return inYards;
+                    },
+                elevDiff: function(feetB, feetA){
+                    var inFeet = feetB - feetA;
+                    var inYards = inFeet * 0.333333;
+                    return inYards;
+                },
+                getElevByPoint: function(myLatLng, callback){
+                    var eServ = new google.maps.ElevationService();
+                    var locArr = [];
+                    locArr.push(myLatLng);
+                    var locObj = {
+                        locations: locArr
+                    };
+                    var queryRes = eServ.getElevationForLocations(locObj, callback);
+                    return callback;
+                }
+                /*,
                 _countClick: function(){
                     dotClicks = dotClicks + 1;
                 },
