@@ -52,6 +52,19 @@ var mapBounds = {
             gMap.fitBounds(mapBounds);
         }
     });
+// ---- BOOLEANS ---- //
+var playerBool = false; //toggles the player img (for judging distances)
+var recordBool = false; //toggles recording polygons
+var lineBool = false; //allows drawing of lines
+
+var devBool = false;     //when set to true, additional info will be logged to the console, and edits can 
+                                    //be made to certain objects.
+                                    //Enable from the console.
+/*
+var testBool;    //when set to true, certain objects will be displayed that would not be
+                                    //visible in a production environment.
+                                    //Enable from the console.
+*/
 // ---- FUNCTIONS ---- //
 //Elevation:
 function cb_elevDiff(results){
@@ -79,6 +92,23 @@ function showElevDiff(pntB, pntA){
     Array.prototype.push.apply(locArr, [pntB, pntA]);
     getElevByPoints(locArr, cb_elevDiff);
 }
+function cb_logElev(results){
+    var resA = results[0];
+    var metersA = resA.elevation;
+    console.log('Current elevation (meters): ' + metersA);
+}
+function getElevMeters(pntA){
+    var elevStr = 'lat: ' + pntA.lat + ', lng: ' + pntA.lng;
+    var elevPos = {
+        lat: pntA.lat,
+        lng: pntA.lng
+    };
+    console.log('Current position:');
+    console.log(elevStr);
+    var locArr = [];
+    locArr.push(elevPos);
+    getElevByPoints(locArr, cb_logElev);
+}
 
 // ---- DEFINE THE MAP ---- //
 //Constructor function
@@ -87,19 +117,6 @@ var MyMap = function(){
     
   }
 };
-
-// ---- BOOLEANS ---- //
-var playerBool = false; //toggles the player img (for judging distances)
-var recordBool = false; //toggles recording polygons
-var lineBool = false; //allows drawing of lines
-/*
-var devBool;     //when set to true, additional info will be logged to the console, and edits can 
-                                    //be made to certain objects.
-                                    //Enable from the console.
-var testBool;    //when set to true, certain objects will be displayed that would not be
-                                    //visible in a production environment.
-                                    //Enable from the console.
-*/
 
 //Collections (arrays)
 var polyDots = [];
@@ -249,6 +266,10 @@ IWin.attach = function(obj, eventType, cont){
 MyMap.addPlayer = function(cent){
     var golferImg = "https://www.dropbox.com/s/p0amgjaaous9rn9/golfer.png?dl=1&raw=true";
     if (lineBool == false) {
+        //dev logging:
+            if(devBool == true){
+                getElevMeters(cent);
+            }
         var markerOpts = {
         id: 'playerMarker',
         title: 'Current Location',
@@ -297,6 +318,7 @@ MyMap.addPlayer = function(cent){
                 //development function
                 if(devBool == true) {
                     var devBounds = gMap.getBounds();
+                    console.log("Current viewport bounds:");
                     console.log(devBounds);
                 }
             }
