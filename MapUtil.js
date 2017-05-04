@@ -54,6 +54,13 @@ var polyOpts = {
   fillOpacity: 0.15
 };
 
+                var devBool;     //when set to true, additional info will be logged to the console, and edits can 
+                                    //be made to certain objects.
+                                    //Enable from the console.
+                var testBool;    //when set to true, certain objects will be displayed that would not be
+                                    //visible in a production environment.
+                                    //Enable from the console.
+
 //Function: Select image file/url by prefix
 function getImgByPref(pref){
     var myImg;
@@ -674,6 +681,28 @@ function getImgByPref(pref){
                     };
                     var queryRes = eServ.getElevationForLocations(locObj, callback);
                     return callback;
+                },
+                enableDev: function(){
+                    devBool = true;
+                    return devBool;
+                },
+                disableDev: function(){
+                    devBool = false;
+                    return devBool;
+                },
+                enableTest: function(){
+                    testBool = true;
+                    return testBool;
+                },
+                disableTest: function(){
+                    testBool = false;
+                    return testBool;
+                },
+                getTestBool: function(){
+                    if(testBool !== true){
+                        testBool = false;
+                    }
+                    return testBool;
                 }
                 /*,
                 _countClick: function(){

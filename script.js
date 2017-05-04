@@ -23,6 +23,7 @@ var mapOpts = {
 };
     
 //bounds (doesn't actually cut off the map at the boundary)
+    //can trigger an event on scroll (if outside bounds, snap back to bounds)
 /*
 console command:
 gMap.fitBounds({
@@ -86,10 +87,19 @@ var MyMap = function(){
     
   }
 };
-    
+
+// ---- BOOLEANS ---- //
 var playerBool = false; //toggles the player img (for judging distances)
 var recordBool = false; //toggles recording polygons
 var lineBool = false; //allows drawing of lines
+/*
+var devBool;     //when set to true, additional info will be logged to the console, and edits can 
+                                    //be made to certain objects.
+                                    //Enable from the console.
+var testBool;    //when set to true, certain objects will be displayed that would not be
+                                    //visible in a production environment.
+                                    //Enable from the console.
+*/
 
 //Collections (arrays)
 var polyDots = [];
@@ -284,6 +294,11 @@ MyMap.addPlayer = function(cent){
                     pWins.setMap(null);
                 }
                 playerMarker.setMap(null);
+                //development function
+                if(devBool == true) {
+                    var devBounds = gMap.getBounds();
+                    console.log(devBounds);
+                }
             }
         });
         playerMarker.addListener('click', function(){
@@ -520,6 +535,51 @@ var teeWins = [];
     var white9Mrkr = mwin.newMrkrWin(43.27148831843679, -70.9004294872284, 'white9', 'Hole 9 White Tee', 4, 318, 7, green9Center);
     var gold9Mrkr = mwin.newMrkrWin(43.271141668151756, -70.90076074004173, 'gold9', 'Hole 9 Gold Tee', 4, 274, 7, green9Center);
     var jr9Mrkr = mwin.newMrkrWin(43.27107429082491, -70.90083986520767, 'jr9', 'Hole 9 Jr Tee', 4, 265, 7, green9Center);
-    
+
+// --- TEST ---- //
+var testcnt = 0;
+var testOverlay;
+gMap.addListener('bounds_changed', function(){
+var testBool = mwin.getTestBool();
+if (testBool == true && testcnt < 1) {
+    testcnt = 1;
+    // Ground Overlay //
+    testOverlayFunc = function(){
+        var overlay1;
+
+        var oBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng({
+                lat: 43.27038977201536,
+                lng: -70.90451717376709
+            }),
+            new google.maps.LatLng({
+                lat: 43.27088778218338,
+                lng: -70.90305000543594
+            })
+        );
+        //console.log(oBounds);
+        var oImg = 'overlaytest1-2.png';
+        overlay1 = new google.maps.GroundOverlay(oImg, oBounds);
+        overlay1.setMap(gMap);
+        overlay1.clickable = false;
+        overlay1.opacity = 0.5;
+        console.log ('Testing = TRUE - Added test overlay');
+
+        return overlay1;
+        //Notes:
+            //need to trigger markers, polygons, and click events to fire on the tiled overlays.
+            //maybe create one "super" overlay (high res), for the entire map.
+            //or trigger markers, polygons and clicks on the window, instead of map canvas.
+
+        //--// end test ground overlay
+    };
+    testOverlay = testOverlayFunc();
+} else if (testBool == false && testcnt == 1) {
+    testOverlay.setMap(null);
+    testcnt = 0;
+    console.log('Testing = FALSE - Removed test overlay');
+}
+});
+
 ////end self-instigating function.
 }(window, window.google, window.MapUtil || (window.MapUtil = {})));
