@@ -57,7 +57,7 @@ var playerBool = false; //toggles the player img (for judging distances)
 var recordBool = false; //toggles recording polygons
 var lineBool = false; //allows drawing of lines
 
-var devBool = false;     //when set to true, additional info will be logged to the console, and edits can 
+var devBool = true;     //when set to true, additional info will be logged to the console, and edits can 
                                     //be made to certain objects.
                                     //Enable from the console.
 /*
@@ -103,13 +103,31 @@ function getElevMeters(pntA){
         lat: pntA.lat,
         lng: pntA.lng
     };
-    console.log('Current position:');
-    console.log(elevStr);
+    console.log('Current position: {' + elevStr + '}');
     var locArr = [];
     locArr.push(elevPos);
     getElevByPoints(locArr, cb_logElev);
 }
-
+function logBounds(){
+    var devBounds = gMap.getBounds();
+    console.log("Current viewport bounds:");
+    console.log(devBounds);
+    var mySW = {
+        lat: devBounds.f.f,
+        lng: devBounds.b.b
+    };
+    var myNE = {
+        lat: devBounds.f.b,
+        lng: devBounds.b.f
+    };
+    var myBounds = {
+        sw: mySW,
+        ne: myNE
+    };
+    var boundStr = 'sw: ({lat: ' + devBounds.f.f + ', lng: ' + devBounds.b.b + '}, ne:{lat: ' + devBounds.f.b + ', lng: ' + devBounds.b.f + '})';
+    console.log(myBounds);
+    console.log(boundStr);
+}
 // ---- DEFINE THE MAP ---- //
 //Constructor function
 var MyMap = function(){
@@ -317,9 +335,7 @@ MyMap.addPlayer = function(cent){
                 playerMarker.setMap(null);
                 //development function
                 if(devBool == true) {
-                    var devBounds = gMap.getBounds();
-                    console.log("Current viewport bounds:");
-                    console.log(devBounds);
+                    logBounds();
                 }
             }
         });
@@ -602,6 +618,14 @@ if (testBool == true && testcnt < 1) {
     console.log('Testing = FALSE - Removed test overlay');
 }
 });
+    
+//HEATMAP TEST//
+
+
+    
+
+
+
 
 ////end self-instigating function.
 }(window, window.google, window.MapUtil || (window.MapUtil = {})));

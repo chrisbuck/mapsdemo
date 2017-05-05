@@ -79,6 +79,30 @@ function getImgByPref(pref){
     }
     return myImg;
 }
+function getElevByPoints (locArr, callback){
+                    var eServ = new google.maps.ElevationService();
+                    var locObj = {
+                        locations: locArr
+                    };
+                    eServ.getElevationForLocations(locObj, callback);
+                    //return queryRes;
+}
+function cb_logElev(results){
+    var resA = results[0];
+    var metersA = resA.elevation;
+    console.log('Current elevation (meters): ' + metersA);
+}
+function getElevMeters(pntA){
+    var elevStr = 'lat: ' + pntA.lat + ', lng: ' + pntA.lng;
+    var elevPos = {
+        lat: pntA.lat,
+        lng: pntA.lng
+    };
+    console.log('Current position: {' + elevStr + '}');
+    var locArr = [];
+    locArr.push(elevPos);
+    getElevByPoints(locArr, cb_logElev);
+}
     
     //Constructor function:
         var MapUtil = (function(){
@@ -238,6 +262,7 @@ function getImgByPref(pref){
                         };
                         gMap.setCenter(myPos);
                         gMap.setZoom(24);
+                        getElevMeters(myPos);
                     });
                     mObj.addListener('drag', function(e){
                         var ydId = pref + 'yds';
