@@ -90,7 +90,8 @@ function getElevByPoints (locArr, callback){
 function cb_logElev(results){
     var resA = results[0];
     var metersA = resA.elevation;
-    console.log('Current elevation (meters): ' + metersA);
+    //console.log('Current elevation (meters): ' + metersA);
+    return metersA;
 }
 function getElevMeters(pntA){
     var elevStr = 'lat: ' + pntA.lat + ', lng: ' + pntA.lng;

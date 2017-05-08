@@ -64,7 +64,11 @@ var devBool = true;     //when set to true, additional info will be logged to th
 var testBool;    //when set to true, certain objects will be displayed that would not be
                                     //visible in a production environment.
                                     //Enable from the console.
-*/
+ */
+
+var tempPts = [];   //Array for getting several locations (e.g., heatmaps)
+var tempElevs = [];     //Array for returning several elevations (e.g., heatmaps)
+    
 // ---- FUNCTIONS ---- //
 //Elevation:
 function cb_elevDiff(results){
@@ -92,10 +96,16 @@ function showElevDiff(pntB, pntA){
     Array.prototype.push.apply(locArr, [pntB, pntA]);
     getElevByPoints(locArr, cb_elevDiff);
 }
+function cb_returnResults(results){
+    tempPts = results;
+    console.log(tempPts);
+    return tempPts;
+}
 function cb_logElev(results){
     var resA = results[0];
     var metersA = resA.elevation;
-    console.log('Current elevation (meters): ' + metersA);
+    //console.log('Current elevation (meters): ' + metersA);
+    return metersA;
 }
 function getElevMeters(pntA){
     var elevStr = 'lat: ' + pntA.lat + ', lng: ' + pntA.lng;
@@ -128,6 +138,59 @@ function logBounds(){
     console.log(myBounds);
     console.log(boundStr);
 }
+function cb_showResultsOnMap(results){
+    console.log(results);
+    
+    var cnt = results.length;
+    var winStr = '<table>';
+    var cell1Str;
+    var cell2Str;
+    var posElev;
+    var posLat;
+    var posLng;
+    var dataArr = [];
+    var i = 0;
+    for (i = 0; i < cnt; i++){
+        posElev = results[i].elevation;
+        posLat = tempPts[i].lat();
+        posLng = tempPts[i].lng();
+        var pntArr = [];
+        pntArr.push(posElev, '{lat: ' + posLat + ', lng: ' + posLng + '}');
+        dataArr.push(pntArr);
+    }
+    cnt = dataArr.length;
+    var n = 0;
+    //dataArr.splice(0, dCnt);
+    var nCnt = dataArr.length;
+    function stringthis(){
+        if (n < nCnt){
+        var myPt = dataArr[n];
+        cell1Str = '<tr><td>' + myPt[0] + '</td>';
+        console.log(myPt[0]);
+        cell2Str = '<td>' + myPt[1] + '</td></tr>';
+        winStr += cell1Str;
+        winStr += cell2Str;
+        n++;
+        console.log(n);
+        }
+    }
+    
+    dataArr.forEach(stringthis);
+    winStr += '</table>'
+    
+    console.log(winStr);
+    
+    var myWin = new google.maps.InfoWindow({content: winStr});
+    var lastPos = {
+        lat: posLat,
+        lng: posLng
+    };
+    
+    myWin.open(gMap, gMap);
+    myWin.setPosition(lastPos);
+
+    return results;
+}
 // ---- DEFINE THE MAP ---- //
 //Constructor function
 var MyMap = function(){
@@ -158,7 +221,155 @@ var getDistance = function(p1, p2) {
   var d = R * c;
   return d; // returns the distance in meter
 };
+
+var addNorthMeters = function(myLat, mtrs){
+    var newLat;
+    var dy = mtrs / 1000;
+    var rEarth = 6378;
+    var pi = Math.PI;
+    newLat = myLat + (dy / rEarth) * (180 / pi);
+    return newLat;
+};
+var addSouthMeters = function(myLat, mtrs){
+    var newLat;
+    var dy = mtrs / 1000;
+    var rEarth = 6378;
+    var pi = Math.PI;
+    newLat = myLat - (dy / rEarth) * (180 / pi);
+    return newLat;
+};
+function addEastMeters(myLng, mtrs){
+    var newLng;
+    var dx = mtrs / 1000;
+    var rEarth = 6378;
+    var pi = Math.PI;
+    var delta = dx / rEarth;
+    var degree = myLng * pi/180;
+    var cosDeg = Math.cos(degree);
+    newLng = myLng + (delta) * (180 / pi) / cosDeg;
+    //new_longitude = longitude + (dx / r_earth) * (180 / pi) / cos(latitude * pi/180);
+    return newLng;
+}
+var addWestMeters = function(myLng, mtrs){
+    var newLng;
+    var dx = mtrs / 1000;
+    var rEarth = 6378;
+    var pi = Math.PI;
+    var delta = dx / rEarth;
+    var degree = myLng * pi/180;
+    var cosDeg = Math.cos(degree);
+    newLng = myLng - (delta) * (180 / pi) / cosDeg;
+    //new_longitude = longitude + (dx / r_earth) * (180 / pi) / cos(latitude * pi/180);
+    return newLng;
+};
+
+var addPoint = function(myLat, myLng){
+    var myPos = {
+        lat: myLat,
+        lng: myLng
+    };
+    var dotOpts = {
+        strokeColor: 'Blue',
+        strokeOpacity: 0.8,
+        strokeWeight: 1,
+        fillColor: '#f40722',
+        fillOpacity: 0.8,
+        draggable: true,
+        map: gMap,
+        center: myPos,
+        zIndex: 4,
+        radius: 1
+    };
+    //Add a new circle
+    var newDot = new google.maps.Circle(dotOpts);
+    return newDot;
+};
+
+//Test Functions//
+//Get coords and elevation in regular intervals
+var getCoordsElev = function(clickPos){
+    //var ptsArr = tempPts;
+    var outStr = '<table>';
+    var posLat;
+    var posLng;
+    var posElev;
+    var newPt;
     
+    var cell1Str = '';
+    var cell2Str = '';
+    var heatMapWin = new google.maps.InfoWindow({});;
+    var pointA;
+    
+    var quota = 560;
+    var cols = 12;
+    var rws = 24;
+    var remaining = quota - (cols * rws) - 2;
+    var remStr = remaining + ' queries remaining';
+    
+    var r;
+    var n = 0;
+    
+    var myNewPos;
+    posLat = clickPos.latLng.lat();
+    posLng = clickPos.latLng.lng();
+    addPoint(posLat, posLng);
+    newPt = new google.maps.LatLng(posLat, posLng);
+    tempPts.push(newPt);
+    for (r = 0; r < rws; r++) {
+        var c;
+        var rmod;
+    for (c = 0; c < cols; c++) {
+        rmod = ((2 + r) % 2);
+        var oldLng;
+        var oldLat;
+        var newLng;
+        var newLat;
+
+        oldLng = tempPts[n].lng();
+        oldLat = tempPts[n].lat();
+        if (rmod == 0){
+            newLng = addEastMeters(oldLng, 7);
+        } else {
+            newLng = addWestMeters(oldLng, 7);
+        }
+        newLat = oldLat;
+        
+        addPoint(newLat, newLng);
+        var myNewPos = new google.maps.LatLng(newLat, newLng);
+
+    tempPts.push(myNewPos);
+        n++;
+    }
+        
+        var mod = Math.abs((r + 2) % 2);
+        console.log(mod);
+        var nextOverLng;
+        var nextDownLat;
+        if (mod == 1) {
+            //is even
+            nextOverLng = addEastMeters(tempPts[n].lng(), 3.5);
+            nextDownLat = addSouthMeters(tempPts[n].lat(), 3.5);
+        } else {
+            //is odd
+            nextOverLng = addWestMeters(tempPts[n].lng(), 3.5);
+            nextDownLat = addSouthMeters(tempPts[n].lat(), 3.5);
+        }
+        var nextPos = new google.maps.LatLng(nextDownLat, nextOverLng);
+        addPoint(nextDownLat, nextOverLng);
+        tempPts.push(nextPos);
+        n++;
+    }
+
+    getElevByPoints(tempPts, cb_showResultsOnMap);
+    console.log(remStr);
+};
+
+var testBool = mwin.getTestBool();
+if (testBool == true){
+    google.maps.event.addListener(gMap, 'click', function(e){
+       getCoordsElev(e); 
+    });
+}
 // ---- OTHER OBJECTS ---- //
 
 //Markers
