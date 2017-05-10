@@ -18,7 +18,7 @@ var greenBlue = 'rgba(0, 255, 195, 1)';
 var brightBlue = 'rgba(0, 245, 255, 1)';
 var lightBlue = 'rgba(0, 145, 255, 1)';
 var midBlue = 'rgba(0, 75, 255, 1)';
-var fullBlue = 'rgba(0, 0, 255, 1)';
+var fullBlue = 'rgb(0, 0, 255)';
 
 //Grp 6
 var grp6Colors = [redViolet, hotViolet];
@@ -814,6 +814,137 @@ var heatmap6Data = [
 {location: new google.maps.LatLng(43.27084462263355, -70.90460925099319), weight: 10.477885959615}
 ];
 
+var d1cnt = heatmap1Data.length;
+var d2cnt = heatmap2Data.length;
+var d3cnt = heatmap3Data.length;
+var d4cnt = heatmap4Data.length;
+var d5cnt = heatmap5Data.length;
+var d6cnt = heatmap6Data.length;
+
+//Master options//
+var myRad = 8;
+var myOpac = .25;
+
+//Counter variables
+var g = 6;
+var d = 0;
+
+//Dot array
+var heatDots = [];
+
+function selectColor1(grp){
+    var colr1;
+    if(grp == 6) {
+        colr1 = fullRed;
+    } else if (grp == 5) {
+        colr1 = redOrange;
+    } else if (grp == 4) {
+        colr1 = fullOrange;
+    } else if (grp == 3) {
+        colr1 = lightBlue;
+    } else if (grp == 2) {
+        colr1 = midBlue;
+    } else if (grp == 1) {
+        colr1 = fullBlue;
+    }
+    return colr1;
+}
+function selectColor2(grp){
+    var colr2;
+    if(grp == 6) {
+        colr2 = redViolet;
+    } else if (grp == 5) {
+        colr2 = fullRed;
+    } else if (grp == 4) {
+        colr2 = redOrange;
+    } else if (grp == 3) {
+        colr2 = brightBlue;
+    } else if (grp == 2) {
+        colr2 = lightBlue;
+    } else if (grp == 1) {
+        colr2 = midBlue;
+    }
+    return colr2;
+}
+function selectDataset(grp){
+    var dataset;
+    if(grp == 6) {
+        dataset = heatmap6Data;
+    } else if (grp == 5) {
+        dataset = heatmap5Data;
+    } else if (grp == 4) {
+        dataset = heatmap4Data;
+    } else if (grp == 3) {
+        dataset = heatmap3Data;
+    } else if (grp == 2) {
+        dataset = heatmap2Data;
+    } else if (grp == 1) {
+        dataset = heatmap1Data;
+    }
+    return dataset;
+}
+function addDots(){
+    var colr1 = selectColor1(g);
+    var colr2 = selectColor2(g);
+    var thisset = selectDataset(g);
+    var thisVal = thisset[d];
+    //console.log(thisVal);
+    var thisLoc = {
+        lat: thisVal.location.lat(),
+        lng: thisVal.location.lng()
+    }
+    var thisWeight = thisVal.weight * .1;
+    
+    var fillOpac = thisWeight * myOpac;
+    var strokeOpac = fillOpac * 0.5;
+    
+    var dotOpts = {
+        strokeColor: colr2,
+        strokeOpacity: strokeOpac,
+        strokeWeight: 8,
+        fillColor: colr1,
+        fillOpacity: fillOpac,
+        draggable: false,
+        map: gMap,
+        center: thisLoc,
+        zIndex: 4,
+        radius: myRad
+    };
+    
+    var newDot = new google.maps.Circle(dotOpts);
+    heatDots.push(newDot);
+    d++;
+}
+
+function dotAddLoop(){
+    var h;
+    g = 6;
+    for (h = 6; h > 0; h--) {
+        if(h == 0){break;}
+        g = h;
+        var dataset = selectDataset(g);
+        d = 0;
+        dataset.forEach(addDots);
+    }
+}
+
+//dotAddLoop();
+
+function dotRemoveLoop(){
+    d = 0
+    var cnt = heatDots.length;
+    for (d = 0; d < cnt; d++){
+        var thisDot = heatDots.pop();
+        thisDot.setMap(null);
+    }
+    console.log(heatDots);
+}
+
+//d = 0;
+//heatmap6Data.forEach(addDots);
+
+
+/*
 var heatmap1 = new google.maps.visualization.HeatmapLayer({
     id: 'heatmap1',
     data: heatmap1Data
