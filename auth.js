@@ -1,9 +1,10 @@
 window.addEventListener('load', function() {
-
+var username;
+    
   var auth = new auth0.WebAuth({
     domain: 'chrisbuck.auth0.com',
     clientID: '25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN',
-    redirectUri: window.location.href,
+    redirectUri: 'https://chrisbuck.github.io/mapsdemo/',
     responseType: 'token id_token'
   });
 
@@ -13,7 +14,7 @@ window.addEventListener('load', function() {
   document.getElementById('btn-logout').addEventListener('click', logout);
 
   function login() {
-    var username = document.getElementById('username').value;
+    username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     auth.redirect.loginWithCredentials({
       connection: 'Username-Password-Authentication',
@@ -61,7 +62,8 @@ window.addEventListener('load', function() {
   function parseHash() {
     var token = localStorage.getItem('id_token');
     if (token) {
-      show_logged_in();
+        console.log(username);
+      show_logged_in(username);
     } else {
       auth.parseHash({ _idTokenVerification: false }, function(err, authResult) {
         if (err) {
