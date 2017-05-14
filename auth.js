@@ -1,4 +1,6 @@
+var mytoken;    //test
 //User Authentication (AuthO)
+
 //lock
 var lock = new Auth0Lock('Sy3LfWdLUKI3FDD054pwhn1QOVroeBPg', 'chrisbuck.auth0.com');
 //implement login
@@ -13,8 +15,10 @@ lock.on("authenticated", function(authResult) {
       // Handle error
       return;
     }
+      mytoken = authResult.idToken;
+      console.log(mytoken);
     localStorage.setItem('id_token', authResult.idToken);
     // Display user information
-    show_profile_info(profile);
+    //show_profile_info(profile);
   });
 });
