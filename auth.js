@@ -1,10 +1,9 @@
 window.addEventListener('load', function() {
-var username;
-    
+
   var auth = new auth0.WebAuth({
     domain: 'chrisbuck.auth0.com',
     clientID: '25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN',
-    redirectUri: 'https://chrisbuck.github.io/mapsdemo/',
+    redirectUri: window.location.href,
     responseType: 'token id_token'
   });
 
@@ -14,7 +13,7 @@ var username;
   document.getElementById('btn-logout').addEventListener('click', logout);
 
   function login() {
-    username = document.getElementById('username').value;
+    var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     auth.redirect.loginWithCredentials({
       connection: 'Username-Password-Authentication',
@@ -62,8 +61,7 @@ var username;
   function parseHash() {
     var token = localStorage.getItem('id_token');
     if (token) {
-        console.log(username);
-      show_logged_in(username);
+      show_logged_in();
     } else {
       auth.parseHash({ _idTokenVerification: false }, function(err, authResult) {
         if (err) {
@@ -86,4 +84,58 @@ var username;
 
   parseHash();
 
+});
+var lock = new Auth0Lock('25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN', 'chrisbuck.auth0.com');
+
+lock.on("authenticated", function(authResult) {
+  //localStorage.setItem('id_token', authResult.idToken);
+  lock.getProfile(authResult.idToken, function (err, profile) {
+      if (err) {
+
+        // Remove expired token (if any)
+        localStorage.removeItem('id_token');
+
+        // Remove expired profile (if any)
+        localStorage.removeItem('profile');
+
+        return alert('There was an error getting the profile: ' + err.message);
+
+      } else {
+
+        localStorage.setItem('id_token', authResult.idToken);
+
+        localStorage.setItem('profile', JSON.stringify(profile));
+
+        showUserProfile(profile);
+      }
+    });
+
+});
+
+var init = function() {
+  var id_token = localStorage.getItem('id_token');
+  if (id_token) {
+
+    // perform logic for an authenticated user
+    // ...
+  }
+};
+
+init();
+
+var logout = function() {
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('profile');
+    window.location.href = "/";
+};
+
+var btn_login = document.getElementById('btn-login');
+var btn_logout = document.getElementById('btn-logout');
+
+btn_login.addEventListener('click', function() {
+  lock.show();
+});
+
+btn_logout.addEventListener('click', function() {
+  logout();
 });
