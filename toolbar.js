@@ -29,8 +29,6 @@ var auth = new auth0.WebAuth({
     responseType: 'token id_token'
   });
 
-
-
 function login() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
@@ -101,7 +99,7 @@ function login() {
     localStorage.setItem('id_token', authResult.idToken);
   }
 
-  parseHash();
+
 
 var lock = new Auth0Lock('25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN', 'chrisbuck.auth0.com');
 
@@ -241,6 +239,8 @@ $j('#profileIcon').click(function(){
         btn_logout.addEventListener('click', function() {
           logout();
         });
+        
+        parseHash();
         
     } else if ($sBar.width() == 175){
         $sBar.animate({width: 0}, 100, function(){
