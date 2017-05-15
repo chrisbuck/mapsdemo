@@ -156,7 +156,7 @@ var showUserProfile = function(profile) {
     $j('#profileIcon').css({
        width: 50,
         height: 50,
-        clipPath: 'circle(40px at center)';
+        clipPath: 'circle(40px at center)'
     });
   /*
   document.getElementById('name').textContent = profile.name;
