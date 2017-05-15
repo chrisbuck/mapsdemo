@@ -786,49 +786,7 @@ var teeWins = [];
     var jr9Mrkr = mwin.newMrkrWin(43.27107429082491, -70.90083986520767, 'jr9', 'Hole 9 Jr Tee', 4, 265, 7, green9Center);
 
 // --- TEST ---- //
-var testcnt = 0;
-var testOverlay;
-gMap.addListener('bounds_changed', function(){
-var testBool = mwin.getTestBool();
-if (testBool == true && testcnt < 1) {
-    testcnt = 1;
-    // Ground Overlay //
-    testOverlayFunc = function(){
-        var overlay1;
 
-        var oBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng({
-                lat: 43.27038977201536,
-                lng: -70.90451717376709
-            }),
-            new google.maps.LatLng({
-                lat: 43.27088778218338,
-                lng: -70.90305000543594
-            })
-        );
-        //console.log(oBounds);
-        var oImg = 'overlaytest1-2.png';
-        overlay1 = new google.maps.GroundOverlay(oImg, oBounds);
-        overlay1.setMap(gMap);
-        overlay1.clickable = false;
-        overlay1.opacity = 0.5;
-        console.log ('Testing = TRUE - Added test overlay');
-
-        return overlay1;
-        //Notes:
-            //need to trigger markers, polygons, and click events to fire on the tiled overlays.
-            //maybe create one "super" overlay (high res), for the entire map.
-            //or trigger markers, polygons and clicks on the window, instead of map canvas.
-
-        //--// end test ground overlay
-    };
-    testOverlay = testOverlayFunc();
-} else if (testBool == false && testcnt == 1) {
-    testOverlay.setMap(null);
-    testcnt = 0;
-    console.log('Testing = FALSE - Removed test overlay');
-}
-});
     
 //HEATMAP TEST//
 
