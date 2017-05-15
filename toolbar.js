@@ -152,6 +152,12 @@ var showUserProfile = function(profile) {
   // ...
 
   document.getElementById('profileIcon').src = profile.picture;
+
+    $j('#profileIcon').css({
+       width: 50,
+        height: 50,
+        clipPath: 'circle(40px at center)';
+    });
   /*
   document.getElementById('name').textContent = profile.name;
   document.getElementById('email').textContent = profile.email;
