@@ -61,6 +61,15 @@ body {
     padding-left: 3px;
     padding-bottom: 3px;
 }
+#userBar {
+    width: 0px;
+    background-color: rgba(240, 255, 255, 0.85);
+    border: 1px solid rgba(16, 19, 80, 0.4);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    position: relative;
+    float: right;
+}
 .toggleCell {
 
 }
