@@ -103,7 +103,6 @@ function login() {
 
   parseHash();
 
-});
 var lock = new Auth0Lock('25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN', 'chrisbuck.auth0.com');
 
 lock.on("authenticated", function(authResult) {
