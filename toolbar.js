@@ -13,6 +13,9 @@ var heatBool = false;
 //jQuery
 var $sBar = $j('#settingsBar');
 //Settings Icon
+//dimensions - 50x50
+//padding-right: 3px
+//padding-top: 3px
 $j('#settingsIcon').hover(function(){
     $j(this).css('opacity', '0.8');
     }, function(){
