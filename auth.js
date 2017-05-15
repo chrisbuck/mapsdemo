@@ -7,10 +7,7 @@ window.addEventListener('load', function() {
     responseType: 'token id_token'
   });
 
-  document.getElementById('btn-login').addEventListener('click', login);
-  document.getElementById('btn-register').addEventListener('click', signup);
-  document.getElementById('btn-google').addEventListener('click', loginWithGoogle);
-  document.getElementById('btn-logout').addEventListener('click', logout);
+
 
   function login() {
     var username = document.getElementById('username').value;
@@ -128,17 +125,6 @@ var logout = function() {
     localStorage.removeItem('profile');
     window.location.href = "/";
 };
-
-var btn_login = document.getElementById('btn-login');
-var btn_logout = document.getElementById('btn-logout');
-
-btn_login.addEventListener('click', function() {
-  lock.show();
-});
-
-btn_logout.addEventListener('click', function() {
-  logout();
-});
 
 var showUserProfile = function(profile) {
 

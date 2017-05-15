@@ -12,6 +12,9 @@ var sBarCnt = 0;
 var userCnt = 0;
 var heatBool = false;
 
+//js objects
+var btn_login;
+var btn_logout;
 //jQuery
 var $sBar = $j('#settingsBar');
 //Settings Icon
@@ -76,6 +79,21 @@ $j('#profileIcon').click(function(){
     if (userCnt == 0){
         $sBar.html(profileCode);
         $sBar.animate({width: 175}, 150);
+        btn_login = document.getElementById('btn-login');
+        btn_logout = document.getElementById('btn-logout');
+        document.getElementById('btn-login').addEventListener('click', login);
+        document.getElementById('btn-register').addEventListener('click', signup);
+        document.getElementById('btn-google').addEventListener('click', loginWithGoogle);
+        document.getElementById('btn-logout').addEventListener('click', logout);
+        
+        btn_login.addEventListener('click', function() {
+          lock.show();
+        });
+
+        btn_logout.addEventListener('click', function() {
+          logout();
+        });
+        
     } else if ($sBar.width() == 175){
         $sBar.animate({width: 0}, 100, function(){
             $j(this).hide();
@@ -86,31 +104,4 @@ $j('#profileIcon').click(function(){
         $sBar.animate({width: 175}, 150);
     }
     userCnt++;
-    $j('#heatInnerToggle').click(function(){
-        var btn = $j(this);
-        var prnt = $j(this).parent();
-        if(heatBool == false){
-            btn.css({
-                position: 'relative',
-                left: 0
-            }).animate({
-                left: 18
-            },100, function(){
-                prnt.css('background-color','#279cff');
-            });
-            dotAddLoop();
-            heatBool = true;
-        } else {
-            btn.css({
-                position: 'relative',
-                left: 18
-            }).animate({
-                left: 0
-            },100, function(){
-                prnt.css('background-color','darkgray');
-            });
-            dotRemoveLoop();
-            heatBool = false;
-        }
-        });
 });
