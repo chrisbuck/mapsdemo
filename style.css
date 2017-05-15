@@ -36,6 +36,14 @@ body {
     opacity: 0.3;
     
 }
+#profileIcon {
+    position: relative;
+    padding-top: 2px;
+    padding-right: 3px;
+    float: right;
+    opacity: 0.3;
+    
+}
 #settingsBar {
     width: 0px;
     background-color: rgba(240, 255, 255, 0.85);
