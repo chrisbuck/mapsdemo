@@ -145,8 +145,9 @@ var showUserProfile = function(profile) {
   // Used for editing
   var user_id = profile.user_id;
   // ...
-    /*
-  document.getElementById('avatar').src = profile.picture;
+
+  document.getElementById('profileIcon').src = profile.picture;
+  /*
   document.getElementById('name').textContent = profile.name;
   document.getElementById('email').textContent = profile.email;
   document.getElementById('nickname').textContent = profile.nickname;
