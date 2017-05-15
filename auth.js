@@ -139,3 +139,24 @@ btn_login.addEventListener('click', function() {
 btn_logout.addEventListener('click', function() {
   logout();
 });
+
+var showUserProfile = function(profile) {
+
+  // Used for editing
+  var user_id = profile.user_id;
+  // ...
+    /*
+  document.getElementById('avatar').src = profile.picture;
+  document.getElementById('name').textContent = profile.name;
+  document.getElementById('email').textContent = profile.email;
+  document.getElementById('nickname').textContent = profile.nickname;
+  document.getElementById('created_at').textContent = profile.created_at;
+  document.getElementById('updated_at').textContent = profile.updated_at;
+  */
+    console.log(profile.picture);
+    console.log(profile.name);
+    console.log(profile.email);
+    console.log(profile.nickname);
+    console.log(profile.created_at);
+    console.log(profile.updated_at);
+};
