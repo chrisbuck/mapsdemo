@@ -80,7 +80,7 @@ var auth = new auth0.WebAuth({
 $j('#profileIcon').click(function(){
     $j('#loginPopup').html(formCode).css('visibility', 'visible');
     
-    
+/*
 function login() {
         var username = $j('#username').val();
         var password = $j('#password').val();
@@ -130,7 +130,7 @@ function login() {
         logout();
     });
     
-    
+*/
 
     
 });
@@ -141,7 +141,8 @@ function show_logged_in() {
   }
     
 //detect if logged in (outside of profileIcon function, for redirect back to main page)
-function parseHash() {
+/*
+    function parseHash() {
     var token = localStorage.getItem('id_token');
     if (token) {
       show_logged_in();
