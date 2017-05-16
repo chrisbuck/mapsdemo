@@ -37,6 +37,7 @@ lock.on("authenticated", function(authResult) {
   });
 });
    
+/*
 var id_token = localStorage.getItem('id_token');
 if (id_token) {
   lock.getProfile(id_token, function (err, profile) {
@@ -54,7 +55,7 @@ if (id_token) {
     });
   });
 }
-    
+*/
 //Form HTML
 var formCode = '<form class="form-signin">';
     formCode += '<h2 class="form-signin-heading">Please Log In</h2>';
@@ -80,7 +81,6 @@ var auth = new auth0.WebAuth({
 $j('#profileIcon').click(function(){
     $j('#loginPopup').html(formCode).css('visibility', 'visible');
     
-/*
 function login() {
         var username = $j('#username').val();
         var password = $j('#password').val();
@@ -166,7 +166,7 @@ function show_logged_in() {
     localStorage.setItem('id_token', authResult.idToken);
   }
 */
-  parseHash();
+  //parseHash();
 
     
     
