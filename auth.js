@@ -75,18 +75,8 @@ var auth = new auth0.WebAuth({
     redirectUri: window.location.href,
     responseType: 'token id_token'
 });
-
-$j('#profileIcon').click(function(){
-    $j('#loginPopup').html(formCode).css('visibility', 'visible');
     
-
-
-    $j('#btn-login').on('click', login);
-    $j('#btn-register').on('click', signup);
-    $j('#btn-google').on('click', loginWithGoogle);
-    $j('#btn-logout').on('click', logout);
-    
-    function login() {
+function login() {
         var username = $j('#username').val();
         var password = $j('#password').val();
         auth.redirect.loginWithCredentials({
@@ -121,6 +111,18 @@ $j('#profileIcon').click(function(){
         localStorage.removeItem('access_token');
         window.location.href = "/";
     }
+
+$j('#profileIcon').click(function(){
+    $j('#loginPopup').html(formCode).css('visibility', 'visible');
+    
+
+
+    $j('#btn-login').on('click', login);
+    $j('#btn-register').on('click', signup);
+    $j('#btn-google').on('click', loginWithGoogle);
+    $j('#btn-logout').on('click', logout);
+    
+    
 
     
 });
