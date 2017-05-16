@@ -117,10 +117,10 @@ $j('#profileIcon').click(function(){
     
 
 
-    $j('#btn-login').on('click', login);
-    $j('#btn-register').on('click', signup);
-    $j('#btn-google').on('click', loginWithGoogle);
-    $j('#btn-logout').on('click', logout);
+    $j('#btn-login').click(login);
+    $j('#btn-register').click(signup);
+    $j('#btn-google').click(loginWithGoogle);
+    $j('#btn-logout').click(logout);
     
     
 
