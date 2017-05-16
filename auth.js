@@ -135,7 +135,7 @@ function parseHash() {
     var token = localStorage.getItem('id_token');
     if (token) {
       show_logged_in();
-    } else {
+    } /*else {
       auth.parseHash({ _idTokenVerification: false }, function(err, authResult) {
         if (err) {
           alert('Error: ' + err.errorDescription);
@@ -147,14 +147,14 @@ function parseHash() {
           show_logged_in();
         }
       });
-    }
+    }*/
   }
-
+/*
   function setUser(authResult) {
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
   }
-
+*/
   parseHash();
 
     
