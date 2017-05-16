@@ -158,7 +158,7 @@ function show_logged_in() {
           show_logged_in();
         }
       });
-    }*/
+    }
   }
 /*
   function setUser(authResult) {
