@@ -17,6 +17,7 @@ var btn_login;
 var btn_logout;
 //jQuery
 var $sBar = $j('#settingsBar');
+/*
 var $uBar = $j('#userBar');
 //Settings Icon
 //dimensions - 50x50
@@ -143,7 +144,7 @@ var showUserProfile = function(profile) {
   document.getElementById('nickname').textContent = profile.nickname;
   document.getElementById('created_at').textContent = profile.created_at;
   document.getElementById('updated_at').textContent = profile.updated_at;
-  */
+  
     console.log(profile.picture);
     console.log(profile.name);
     console.log(profile.email);
@@ -210,7 +211,7 @@ var logout = function() {
 
 
 checkLogin();
-
+*/
 $j('#settingsIcon').hover(function(){
     $j(this).css('opacity', '0.8');
     }, function(){
@@ -264,6 +265,8 @@ $j('#settingsIcon').click(function(){
         }
         });
 });
+
+/*
 $j('#profileIcon').click(function(){
     $j(this).css('opacity', '1');
     if (userCnt == 0){
@@ -299,3 +302,4 @@ $j('#profileIcon').click(function(){
     }
     userCnt++;
 });
+*/
