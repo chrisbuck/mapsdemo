@@ -26,7 +26,7 @@ lock.on("authenticated", function(authResult) {
     localStorage.setItem('id_token', authResult.idToken);
 
     // Display user information
-    $j('.nickname').text(profile.nickname);
+    //$j('.nickname').text(profile.nickname);
     //$('.avatar').attr('src', profile.picture);
     $j('#profileIcon').attr('src', profile.picture);
     $j('#profileIcon').css({
@@ -44,7 +44,7 @@ if (id_token) {
       return alert('There was an error getting the profile: ' + err.message);
     }
     // Display user information
-    $j('.nickname').text(profile.nickname);
+    //$j('.nickname').text(profile.nickname);
     //$('.avatar').attr('src', profile.picture);
     $j('#profileIcon').attr('src', profile.picture);
     $j('#profileIcon').css({
