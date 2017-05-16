@@ -75,6 +75,11 @@ var auth = new auth0.WebAuth({
     redirectUri: window.location.href,
     responseType: 'token id_token'
 });
+
+
+$j('#profileIcon').click(function(){
+    $j('#loginPopup').html(formCode).css('visibility', 'visible');
+    
     
 function login() {
         var username = $j('#username').val();
@@ -84,7 +89,7 @@ function login() {
             username: username,
             password: password,
         }, function(err) {
-            if (err) return alert(err.description);
+            //if (err) return alert(err.description);
         });
     }
     
@@ -96,7 +101,7 @@ function login() {
             email: username,
             password: password,
         }, function(err) {
-            if (err) return alert(err.description);
+            //if (err) return alert(err.description);
         });
     }
 
@@ -112,15 +117,18 @@ function login() {
         window.location.href = "/";
     }
 
-$j('#profileIcon').click(function(){
-    $j('#loginPopup').html(formCode).css('visibility', 'visible');
-    
-
-
-    $j('#btn-login').click(login);
-    $j('#btn-register').click(signup);
-    $j('#btn-google').click(loginWithGoogle);
-    $j('#btn-logout').click(logout);
+    $j('#btn-login').click(function(){
+        login();
+    });
+    $j('#btn-register').click(function(){
+        signup();
+    });
+    $j('#btn-google').click(function(){
+        loginWithGoogle();
+    });
+    $j('#btn-logout').click(function(){
+        logout();
+    });
     
     
 
