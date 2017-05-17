@@ -47,13 +47,13 @@ body {
   border: 1px solid #F2F2F2;
 }
 #rightBarWrapper {
-    width: 125px;
+    width: 200px;
     position: absolute;
     top: 0;
     right: 0;
 }
 #cornerIcons {
-    width: 125px;
+    width: 163px;
     height: 60px;
     z-index: 9;
     font-size: 24;
@@ -76,6 +76,14 @@ body {
     float: right;
     opacity: 0.3;
     
+}
+#chatNone {
+    position: relative;
+    padding-top: 2px;
+    padding-right: 3px;
+    float: right;
+    opacity: 0.3;
+    width: 50px;
 }
 #settingsBar {
     width: 0px;

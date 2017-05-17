@@ -222,6 +222,11 @@ $j('#profileIcon').hover(function(){
     }, function(){
     $j(this).css('opacity', '0.3');
 });
+$j('#chatNone').hover(function(){
+    $j(this).css('opacity', '0.8');
+    }, function(){
+    $j(this).css('opacity', '0.3');
+});
 $j('#settingsIcon').click(function(){
     $j(this).css('opacity', '1');
     if (sBarCnt == 0){
