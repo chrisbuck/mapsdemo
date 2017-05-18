@@ -17,201 +17,17 @@ var btn_login;
 var btn_logout;
 //jQuery
 var $sBar = $j('#settingsBar');
-/*
-var $uBar = $j('#userBar');
-//Settings Icon
-//dimensions - 50x50
-//padding-right: 3px
-//padding-top: 3px
 
-var auth = new auth0.WebAuth({
-    domain: 'chrisbuck.auth0.com',
-    clientID: '25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN',
-    redirectUri: window.location.href,
-    responseType: 'token id_token'
-  });
-
-function login() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-    auth.redirect.loginWithCredentials({
-      connection: 'Username-Password-Authentication',
-      username: username,
-      password: password,
-    }, function(err) {
-      if (err) return alert(err.description);
-    });
-  }
-
-  function signup() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-    auth.redirect.signupAndLogin({
-      connection: 'Username-Password-Authentication',
-      email: username,
-      password: password,
-    }, function(err) {
-      if (err) return alert(err.description);
-    });
-  }
-
-  function loginWithGoogle() {
-    auth.authorize({
-      connection: 'google-oauth2'
-    });
-  }
-
-  function logout() {
-     localStorage.removeItem('access_token');
-     localStorage.removeItem('id_token');
-     window.location.href = "/";
-  }
-
-  function show_logged_in(username) {
-    document.querySelector('form.form-signin').style.display = "none";
-    document.querySelector('div.logged-in').style.display = "block";
-  }
-
-  function show_sign_in() {
-    document.querySelector('div.logged-in').style.display = "none";
-    document.querySelector('form.form-signin').style.display = "block";
-  }
-
-  function parseHash() {
-    var token = localStorage.getItem('id_token');
-    if (token) {
-      show_logged_in();
-    } else {
-      auth.parseHash({ _idTokenVerification: false }, function(err, authResult) {
-        if (err) {
-          alert('Error: ' + err.errorDescription);
-          show_sign_in();
-        }
-        if (authResult && authResult.accessToken && authResult.idToken) {
-          window.location.hash = '';
-          setUser(authResult);
-          show_logged_in();
-        }
-      });      
-    }
-  }
-
-    //parseHash();
-
-  function checkLogin() {
-    var token = localStorage.getItem('id_token');
-    if (token) {
-      console.log('token found');
-    } else {
-      auth.parseHash({ _idTokenVerification: false }, function(err, authResult) {
-        if (err) {
-          alert('Error: ' + err.errorDescription);
-          //show_sign_in();
-            console.log('not found')
-        }
-        if (authResult && authResult.accessToken && authResult.idToken) {
-          window.location.hash = '';
-          setUser(authResult);
-          //show_logged_in();
-            console.log('logged in - show the user picture');
-        }
-      });      
-    }
-  }
-
-  function setUser(authResult) {
-    localStorage.setItem('access_token', authResult.accessToken);
-    localStorage.setItem('id_token', authResult.idToken);
-  }
-
-var showUserProfile = function(profile) {
-
-  // Used for editing
-  var user_id = profile.user_id;
-  // ...
-
-  document.getElementById('profileIcon').src = profile.picture;
-
-    $j('#profileIcon').css({
-       width: 50,
-        height: 50,
-        clipPath: 'circle(25px at 47% 53%)'
-    });
-    
-  /*
-  document.getElementById('name').textContent = profile.name;
-  document.getElementById('email').textContent = profile.email;
-  document.getElementById('nickname').textContent = profile.nickname;
-  document.getElementById('created_at').textContent = profile.created_at;
-  document.getElementById('updated_at').textContent = profile.updated_at;
-  
-    console.log(profile.picture);
-    console.log(profile.name);
-    console.log(profile.email);
-    console.log(profile.nickname);
-    console.log(profile.created_at);
-    console.log(profile.updated_at);
-};
-
-var lock = new Auth0Lock('25lcf0JbC5KbrKZrbc1hUYYGbkJ0_uIN', 'chrisbuck.auth0.com');
-
-lock.on("authenticated", function(authResult) {
-  //localStorage.setItem('id_token', authResult.idToken);
-  lock.getProfile(authResult.idToken, function (err, profile) {
-      if (err) {
-
-        // Remove expired token (if any)
-        localStorage.removeItem('id_token');
-
-        // Remove expired profile (if any)
-        localStorage.removeItem('profile');
-
-        return alert('There was an error getting the profile: ' + err.message);
-
-      } else {
-
-        localStorage.setItem('id_token', authResult.idToken);
-
-        localStorage.setItem('profile', JSON.stringify(profile));
-
-        showUserProfile(profile);
-      }
-    });
-
-});
-
-var init = function() {
-  var id_token = localStorage.getItem('id_token');
-  if (id_token) {
-
-    // perform logic for an authenticated user
-      var profile = JSON.parse(localStorage.getItem('profile'));
-      console.log(profile);
-    showUserProfile(profile);
-  }
-};
-
-init();
-
-var getUserDetails = function(){
-    var id_token = localStorage.getItem('id_token');
-  if (id_token) {
-
-    // perform logic for an authenticated user
-      var profile = JSON.parse(localStorage.getItem('profile'));
-      document.querySelector('#userTbl th').innerHTML = profile.nickname;
-  }
+function getWin(){
+    var winWidth = $j(window).innerWidth();
+    var winHeight = $j(window).innerHeight();
+    var winObj = {
+        width: winWidth,
+        height: winHeight
+    };
+    return winObj;
 }
 
-var logout = function() {
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('profile');
-    window.location.href = "/";
-};
-
-
-checkLogin();
-*/
 $j('#settingsIcon').hover(function(){
     $j(this).css('opacity', '0.8');
     }, function(){
@@ -226,6 +42,14 @@ $j('#chatNone').hover(function(){
     $j(this).css('opacity', '0.8');
     }, function(){
     $j(this).css('opacity', '0.3');
+});
+$j('#chatNone').click(function(){
+    var chatPopCode;
+    var w = getWin().width * .25;
+    var h = getWin().height * .75;
+    chatPopCode = '<iframe id="chatFrame" src="http://localhost:3000/chat" style="background-color: #ffffff; width: '+ w +' px; height: '+ h +'px;"></iframe>';
+    $j('#chatPopup').html(chatPopCode);
+    $j('#chatPopup').css('visibility', 'visible');
 });
 $j('#settingsIcon').click(function(){
     $j(this).css('opacity', '1');

@@ -30,7 +30,7 @@ lock.on("authenticated", function(authResult) {
     localStorage.setItem('id_token', authResult.idToken);
       
     // Display user information
-    //$j('.nickname').text(profile.nickname);
+    testuser.name = (profile.nickname);
     //$('.avatar').attr('src', profile.picture);
     $j('#profileIcon').attr('src', profile.picture);
     $j('#profileIcon').css({
@@ -39,6 +39,7 @@ lock.on("authenticated", function(authResult) {
         clipPath: 'circle(25px at 47% 53%)'
     });
     mystatus = 'logged_in';
+      
   });
 });
 
@@ -249,11 +250,10 @@ function show_logged_in() {
             localStorage.setItem('mypicture', profile.picture);
             localStorage.setItem('myname', profile.name);
             localStorage.setItem('mynickname', profile.nickname);
+            testuser.name = (profile.nickname);
             return profile;
         });
     }
-    
-    getMyProfile();
     
     myPicture = localStorage.getItem('mypicture');
     myName = localStorage.getItem('myname');
