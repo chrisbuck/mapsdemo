@@ -6,26 +6,6 @@ body {
   padding: 0;
   margin: 0;
 }
-#chatPopup {
-    visibility: hidden;
-    position: absolute;
-    top: 65px;
-    background-color: '#FFFFFF';
-    z-index: 6;
-    right: 0;
-}
-#chatFrame {
-    position: relative;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    width: 100%;
-}
-#chatFrame form button {
-    width: 50px;
-}
 #loginPopup {
     visibility: hidden;
     width:  350px;
