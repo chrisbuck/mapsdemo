@@ -8,12 +8,15 @@
 
       <!-- Setting the right viewport -->
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
     <link rel="stylesheet" href="style.css">
   </head>
 
 
   <body>
+      <div id="chatPopup">
+          <ul id="messages"></ul>
+          <form action="" id="chatForm" style="background-color: #ffffff; padding: 3px; position: fixed; bottom: 0; width: 100%;"><input style="border: 0; padding: 10px; width: 90%; margin-right: .5%;" id="m" autocomplete="off" /><button style="width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px;">Send</button></form>
+</div>
     <div id="loginPopup">
       <table id="userAuthTbl"><tr><th id="loginHeader">Log In</th><th id="signupHeader">Sign Up</th></tr><tr><td id="userAuthCell" colspan="2"></td></tr>
           <tr style="height: 100%"><td colspan="2" style="height: 100%;" id="xOutLogin"><span style="text-align: right;"><div style="height: 6px; width: 6px; vertical-align: bottom; padding-right: 2px; text-align: right;">x</div></span></td></tr>
