@@ -284,9 +284,11 @@ function parseHash() {
         mystatus = 'logged_in';
         show_logged_in();
         lock.getProfile(token, function (err, profile) {
+            /*
             if (err) {
                 return alert('There was an error getting the profile: ' + err.message);
             }
+            */
         // Display user information
         //$j('.nickname').text(profile.nickname);
         //$('.avatar').attr('src', profile.picture);
